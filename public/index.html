@@ -623,14 +623,13 @@
         gap: 0;
         padding: 0.75rem 0;
         margin-bottom: 1rem;
-        background: var(--bg-secondary);
-        border-top: 1px solid var(--border-color);
-        border-bottom: 1px solid var(--border-color);
+        background: transparent;
+        border: none;
       }
 
       .clocks-strip::before,
       .clocks-strip::after {
-        width: 60px;
+        display: none;
       }
 
       .clock-item {
@@ -650,33 +649,26 @@
         padding: 1.25rem;
       }
 
-      /* Scaled-down FLW corner brackets for mobile */
+      /* Simple corner brackets for mobile */
       .card::before {
-        top: 6px;
-        left: 6px;
-        width: 28px;
-        height: 28px;
+        top: 8px;
+        left: 8px;
+        width: 20px;
+        height: 20px;
+        border-width: 1px;
       }
 
       .card::after {
-        bottom: 6px;
-        right: 6px;
-        width: 28px;
-        height: 28px;
+        bottom: 8px;
+        right: 8px;
+        width: 20px;
+        height: 20px;
+        border-width: 1px;
       }
 
-      .card-corner-tl {
-        top: 6px;
-        left: 6px;
-        width: 4px;
-        height: 4px;
-      }
-
+      .card-corner-tl,
       .card-corner-br {
-        bottom: 6px;
-        right: 6px;
-        width: 4px;
-        height: 4px;
+        display: none;
       }
 
       .direction-toggle {
@@ -710,8 +702,9 @@
       input[type="datetime-local"],
       input[type="text"] {
         padding: 0.75rem;
-        font-size: 1rem;
+        font-size: 0.95rem;
         text-align: center;
+        max-width: 100%;
       }
 
       .location-feedback {
@@ -1044,8 +1037,12 @@
     let touchStartY = 0;
     let isPulling = false;
 
+    function getScrollTop() {
+      return window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    }
+
     document.addEventListener('touchstart', (e) => {
-      if (window.scrollY === 0) {
+      if (getScrollTop() <= 0) {
         touchStartY = e.touches[0].clientY;
         isPulling = true;
       }
@@ -1055,7 +1052,7 @@
       if (!isPulling) return;
       const touchY = e.touches[0].clientY;
       const pullDistance = touchY - touchStartY;
-      if (pullDistance > 120 && window.scrollY === 0) {
+      if (pullDistance > 80 && getScrollTop() <= 0) {
         isPulling = false;
         location.reload();
       }
