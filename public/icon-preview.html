@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Icon Preview - UTC Hack</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f0e6;
+      padding: 2rem;
+      color: #2c2416;
+    }
+    h1 {
+      text-align: center;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+    }
+    .preview-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      margin: 2rem 0;
+    }
+    .preview-item {
+      text-align: center;
+      background: white;
+      padding: 1.5rem;
+      border: 1px solid #d4c9b5;
+    }
+    .preview-item img,
+    .preview-item canvas {
+      display: block;
+      margin: 0 auto 1rem;
+      border: 1px solid #eee;
+    }
+    .size-label {
+      font-size: 0.85rem;
+      color: #5c4d3a;
+      margin-bottom: 0.5rem;
+    }
+    .use-case {
+      font-size: 0.75rem;
+      color: #8b7d6b;
+    }
+    .download-section {
+      text-align: center;
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid #d4c9b5;
+    }
+    button {
+      background: #c45c3e;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      margin: 0.5rem;
+    }
+    button:hover {
+      background: #6b4423;
+    }
+    .mockup {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      padding: 2rem;
+      border-radius: 20px;
+      display: inline-block;
+    }
+    .mockup img {
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+  <h1>UTC HACK — Icon Preview</h1>
+
+  <div class="preview-grid">
+    <div class="preview-item">
+      <img src="icon.svg" width="512" height="512" alt="Icon 512px">
+      <div class="size-label">512 × 512</div>
+      <div class="use-case">High-res / Splash</div>
+    </div>
+
+    <div class="preview-item">
+      <img src="icon.svg" width="192" height="192" alt="Icon 192px">
+      <div class="size-label">192 × 192</div>
+      <div class="use-case">Android / PWA</div>
+    </div>
+
+    <div class="preview-item">
+      <img src="icon.svg" width="180" height="180" alt="Icon 180px">
+      <div class="size-label">180 × 180</div>
+      <div class="use-case">Apple Touch Icon</div>
+    </div>
+
+    <div class="preview-item">
+      <img src="icon.svg" width="128" height="128" alt="Icon 128px">
+      <div class="size-label">128 × 128</div>
+      <div class="use-case">Medium</div>
+    </div>
+
+    <div class="preview-item">
+      <img src="icon.svg" width="64" height="64" alt="Icon 64px">
+      <div class="size-label">64 × 64</div>
+      <div class="use-case">Small</div>
+    </div>
+
+    <div class="preview-item">
+      <img src="icon.svg" width="32" height="32" alt="Icon 32px">
+      <div class="size-label">32 × 32</div>
+      <div class="use-case">Favicon</div>
+    </div>
+  </div>
+
+  <div class="preview-grid">
+    <div class="preview-item">
+      <div class="size-label" style="margin-bottom: 1rem;">Home Screen Mockup</div>
+      <div class="mockup">
+        <img src="icon.svg" width="60" height="60" alt="Home screen icon" style="border-radius: 12px;">
+      </div>
+      <div style="margin-top: 0.5rem; font-size: 0.9rem;">UTC Hack</div>
+    </div>
+  </div>
+
+  <div class="download-section">
+    <p>Click to generate and download PNG versions:</p>
+    <button onclick="downloadPNG(512)">Download 512px PNG</button>
+    <button onclick="downloadPNG(192)">Download 192px PNG</button>
+    <button onclick="downloadPNG(180)">Download 180px PNG</button>
+  </div>
+
+  <canvas id="canvas" style="display: none;"></canvas>
+
+  <script>
+    async function downloadPNG(size) {
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = size;
+      canvas.height = size;
+
+      const img = new Image();
+      img.onload = () => {
+        ctx.drawImage(img, 0, 0, size, size);
+        const link = document.createElement('a');
+        link.download = `icon-${size}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      };
+      img.src = 'icon.svg';
+    }
+  </script>
+</body>
+</html>

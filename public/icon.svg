@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Dark background -->
+  <rect width="512" height="512" fill="#2c2416"/>
+
+  <!-- Subtle border -->
+  <rect x="8" y="8" width="496" height="496" fill="none" stroke="#3d3425" stroke-width="2"/>
+
+  <!-- Left geometric panel - subtle vertical lines -->
+  <g opacity="0.6">
+    <rect x="32" y="48" width="2" height="416" fill="#7a8b6e"/>
+    <rect x="44" y="48" width="1" height="416" fill="#7a8b6e"/>
+    <rect x="52" y="48" width="1" height="416" fill="#7a8b6e"/>
+    <rect x="60" y="48" width="2" height="416" fill="#c9a227"/>
+    <!-- Horizontal accents -->
+    <rect x="28" y="72" width="40" height="2" fill="#6b4423"/>
+    <rect x="28" y="82" width="40" height="1" fill="#6b4423"/>
+    <rect x="28" y="428" width="40" height="2" fill="#6b4423"/>
+    <rect x="28" y="438" width="40" height="1" fill="#6b4423"/>
+  </g>
+
+  <!-- Right geometric panel (mirrored) -->
+  <g opacity="0.6">
+    <rect x="478" y="48" width="2" height="416" fill="#7a8b6e"/>
+    <rect x="467" y="48" width="1" height="416" fill="#7a8b6e"/>
+    <rect x="459" y="48" width="1" height="416" fill="#7a8b6e"/>
+    <rect x="450" y="48" width="2" height="416" fill="#c9a227"/>
+    <rect x="444" y="72" width="40" height="2" fill="#6b4423"/>
+    <rect x="444" y="82" width="40" height="1" fill="#6b4423"/>
+    <rect x="444" y="428" width="40" height="2" fill="#6b4423"/>
+    <rect x="444" y="438" width="40" height="1" fill="#6b4423"/>
+  </g>
+
+  <!-- Clock face - white circle -->
+  <circle cx="256" cy="256" r="140" fill="#f8f6f0" stroke="#a0a0a0" stroke-width="3"/>
+
+  <!-- Horizontal line on face -->
+  <line x1="136" y1="256" x2="376" y2="256" stroke="#d8d8d8" stroke-width="1"/>
+
+  <!-- Red square accents at 12 and 6 -->
+  <rect x="248" y="128" width="16" height="16" fill="#c45c3e"/>
+  <rect x="248" y="368" width="16" height="16" fill="#c45c3e"/>
+
+  <!-- Hour markers (subtle) -->
+  <rect x="253" y="172" width="6" height="12" fill="#8b7d6b"/>
+  <rect x="253" y="328" width="6" height="12" fill="#8b7d6b"/>
+  <rect x="172" y="253" width="12" height="6" fill="#8b7d6b"/>
+  <rect x="328" y="253" width="12" height="6" fill="#8b7d6b"/>
+
+  <!-- Clock hands -->
+  <!-- Hour hand -->
+  <rect x="252" y="200" width="8" height="72" rx="2" fill="#2c2416" transform="rotate(-30, 256, 256)"/>
+  <!-- Minute hand -->
+  <rect x="253" y="160" width="6" height="108" rx="2" fill="#2c2416" transform="rotate(60, 256, 256)"/>
+  <!-- Center cap -->
+  <circle cx="256" cy="256" r="10" fill="#2c2416"/>
+  <!-- Center square detail -->
+  <rect x="250" y="244" width="12" height="12" fill="none" stroke="#2c2416" stroke-width="2" transform="rotate(45, 256, 250)"/>
+
+  <!-- Corner accents -->
+  <g opacity="0.5">
+    <!-- Top left -->
+    <rect x="16" y="16" width="24" height="2" fill="#c9a227"/>
+    <rect x="16" y="16" width="2" height="24" fill="#c9a227"/>
+    <!-- Top right -->
+    <rect x="472" y="16" width="24" height="2" fill="#c9a227"/>
+    <rect x="494" y="16" width="2" height="24" fill="#c9a227"/>
+    <!-- Bottom left -->
+    <rect x="16" y="494" width="24" height="2" fill="#c9a227"/>
+    <rect x="16" y="472" width="2" height="24" fill="#c9a227"/>
+    <!-- Bottom right -->
+    <rect x="472" y="494" width="24" height="2" fill="#c9a227"/>
+    <rect x="494" y="472" width="2" height="24" fill="#c9a227"/>
+  </g>
+</svg>
