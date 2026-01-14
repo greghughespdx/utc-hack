@@ -623,13 +623,14 @@
         gap: 0;
         padding: 0.75rem 0;
         margin-bottom: 1rem;
-        background: transparent;
-        border: none;
+        background: var(--bg-secondary);
+        border-top: 1px solid var(--border-color);
+        border-bottom: 1px solid var(--border-color);
       }
 
       .clocks-strip::before,
       .clocks-strip::after {
-        display: none;
+        width: 60px;
       }
 
       .clock-item {
@@ -649,11 +650,33 @@
         padding: 1.25rem;
       }
 
-      .card-corner-tl,
-      .card-corner-br,
-      .card::before,
+      /* Scaled-down FLW corner brackets for mobile */
+      .card::before {
+        top: 6px;
+        left: 6px;
+        width: 28px;
+        height: 28px;
+      }
+
       .card::after {
-        display: none;
+        bottom: 6px;
+        right: 6px;
+        width: 28px;
+        height: 28px;
+      }
+
+      .card-corner-tl {
+        top: 6px;
+        left: 6px;
+        width: 4px;
+        height: 4px;
+      }
+
+      .card-corner-br {
+        bottom: 6px;
+        right: 6px;
+        width: 4px;
+        height: 4px;
       }
 
       .direction-toggle {
