@@ -699,13 +699,27 @@
         font-size: 0.7rem;
       }
 
-      input[type="datetime-local"],
       input[type="text"] {
         padding: 0.75rem;
         font-size: 0.95rem;
         text-align: center;
         width: 100%;
         box-sizing: border-box;
+      }
+
+      input[type="datetime-local"] {
+        padding: 0.75rem;
+        font-size: 0.95rem;
+        text-align: center;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        -webkit-appearance: none;
+        appearance: none;
+      }
+
+      .step {
+        overflow: hidden;
       }
 
       .location-feedback {
