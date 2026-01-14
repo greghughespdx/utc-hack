@@ -1,0 +1,7 @@
+# UTC Hack - Zulu Time Converter
+# https://utchack.com
+
+User-agent: *
+Allow: /
+
+Sitemap: https://utchack.com/sitemap.xml
