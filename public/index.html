@@ -586,26 +586,12 @@
 
     /* Responsive - iPhone optimized, fills viewport */
     @media (max-width: 600px) {
-      body {
-        min-height: 100dvh;
-        display: flex;
-        flex-direction: column;
-      }
-
-      .header-band {
-        flex-shrink: 0;
-      }
-
       .container {
         padding: 1rem;
-        flex: 1;
-        display: flex;
-        flex-direction: column;
       }
 
       header {
         margin-bottom: 0.75rem;
-        flex-shrink: 0;
       }
 
       header::after {
@@ -621,14 +607,11 @@
         display: none;
       }
 
-      /* Clocks stack vertically and expand to fill space */
       .clocks-strip {
         flex-direction: column;
         gap: 0;
-        padding: 0;
+        padding: 0.75rem 0;
         margin-bottom: 1rem;
-        flex: 1;
-        justify-content: center;
         background: transparent;
         border: none;
       }
@@ -639,7 +622,7 @@
       }
 
       .clock-item {
-        padding: 1rem 0;
+        padding: 0.5rem 0;
       }
 
       .clock-label {
@@ -653,7 +636,6 @@
 
       .card {
         padding: 1.25rem;
-        flex-shrink: 0;
       }
 
       .card-corner-tl,
