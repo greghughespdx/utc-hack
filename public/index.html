@@ -1037,25 +1037,29 @@
     // Pull to refresh
     let touchStartY = 0;
     let isPulling = false;
+    let isRefreshing = false;
 
     function getScrollTop() {
       return window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
     }
 
     document.addEventListener('touchstart', (e) => {
-      if (getScrollTop() <= 0) {
+      if (getScrollTop() <= 0 && !isRefreshing) {
         touchStartY = e.touches[0].clientY;
         isPulling = true;
       }
     }, { passive: true });
 
     document.addEventListener('touchmove', (e) => {
-      if (!isPulling) return;
+      if (!isPulling || isRefreshing) return;
       const touchY = e.touches[0].clientY;
       const pullDistance = touchY - touchStartY;
-      if (pullDistance > 80 && getScrollTop() <= 0) {
+      if (pullDistance > 100 && getScrollTop() <= 0) {
         isPulling = false;
-        location.reload();
+        isRefreshing = true;
+        document.body.style.transition = 'opacity 0.2s ease';
+        document.body.style.opacity = '0.5';
+        setTimeout(() => location.reload(), 200);
       }
     }, { passive: true });
 
