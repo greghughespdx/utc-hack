@@ -1624,7 +1624,7 @@
         }
 
         // Display sun times if available
-        displaySunTimes(resolvedTimezone);
+        displaySunTimes();
 
         document.getElementById('result').classList.add('visible');
       } catch (e) {
@@ -1632,7 +1632,7 @@
       }
     }
 
-    function displaySunTimes(timezone) {
+    function displaySunTimes() {
       const sunTimesEl = document.getElementById('sun-times');
 
       if (!resolvedSunTimes) {
@@ -1640,23 +1640,16 @@
         return;
       }
 
-      // Format time in the target timezone
-      const formatSunTime = (isoString) => {
-        if (!isoString) return '—';
-        const date = new Date(isoString);
-        if (isNaN(date.getTime())) return '—';
-        return date.toLocaleTimeString('en-US', {
-          timeZone: timezone,
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: false
-        });
+      // API returns {utc, zulu, local} objects - use local time
+      const getLocalTime = (timeObj) => {
+        if (!timeObj || !timeObj.local) return '—';
+        return timeObj.local;
       };
 
-      document.getElementById('civil-dawn-time').textContent = formatSunTime(resolvedSunTimes.civilDawn);
-      document.getElementById('sunrise-time').textContent = formatSunTime(resolvedSunTimes.sunrise);
-      document.getElementById('sunset-time').textContent = formatSunTime(resolvedSunTimes.sunset);
-      document.getElementById('civil-dusk-time').textContent = formatSunTime(resolvedSunTimes.civilDusk);
+      document.getElementById('civil-dawn-time').textContent = getLocalTime(resolvedSunTimes.civilDawn);
+      document.getElementById('sunrise-time').textContent = getLocalTime(resolvedSunTimes.sunrise);
+      document.getElementById('sunset-time').textContent = getLocalTime(resolvedSunTimes.sunset);
+      document.getElementById('civil-dusk-time').textContent = getLocalTime(resolvedSunTimes.civilDusk);
 
       sunTimesEl.style.display = 'block';
     }
