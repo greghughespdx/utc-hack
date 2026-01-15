@@ -228,25 +228,29 @@
       letter-spacing: 0.05em;
     }
 
-    /* Theme Toggle - FLW style */
-    .theme-toggle {
+    /* Footer Buttons - FLW style */
+    .footer-btn {
       background: transparent;
       border: 1px solid var(--border-color);
       padding: 0.5rem 1.25rem;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 0.5rem;
       font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.1em;
       color: var(--text-muted);
+      text-decoration: none;
       transition: all 0.2s;
       position: relative;
+      width: 110px;
+      font-family: inherit;
     }
 
-    .theme-toggle::before,
-    .theme-toggle::after {
+    .footer-btn::before,
+    .footer-btn::after {
       content: '';
       position: absolute;
       width: 8px;
@@ -255,21 +259,21 @@
       opacity: 0.6;
     }
 
-    .theme-toggle::before {
+    .footer-btn::before {
       top: -1px;
       left: -1px;
       border-right: none;
       border-bottom: none;
     }
 
-    .theme-toggle::after {
+    .footer-btn::after {
       bottom: -1px;
       right: -1px;
       border-left: none;
       border-top: none;
     }
 
-    .theme-toggle:hover {
+    .footer-btn:hover {
       border-color: var(--accent-gold);
       color: var(--text-secondary);
     }
@@ -687,57 +691,6 @@
     }
 
 
-    .theme-toggle,
-    .donate-button {
-      width: 120px;
-      justify-content: center;
-    }
-
-    .donate-button {
-      background: transparent;
-      border: 1px solid var(--border-color);
-      padding: 0.5rem 1.25rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--text-muted);
-      text-decoration: none;
-      transition: all 0.2s;
-      position: relative;
-    }
-
-    .donate-button::before,
-    .donate-button::after {
-      content: '';
-      position: absolute;
-      width: 8px;
-      height: 8px;
-      border: 1px solid var(--accent-gold);
-      opacity: 0.6;
-    }
-
-    .donate-button::before {
-      top: -1px;
-      left: -1px;
-      border-right: none;
-      border-bottom: none;
-    }
-
-    .donate-button::after {
-      bottom: -1px;
-      right: -1px;
-      border-left: none;
-      border-top: none;
-    }
-
-    .donate-button:hover {
-      border-color: var(--accent-gold);
-      color: var(--text-secondary);
-    }
 
     /* Responsive - iPhone optimized, fills viewport */
     @media (max-width: 600px) {
@@ -904,9 +857,10 @@
         font-size: 0.7rem;
       }
 
-      .theme-toggle {
+      .footer-btn {
         padding: 0.4rem 0.75rem;
         font-size: 0.65rem;
+        width: 100px;
       }
     }
   </style>
@@ -1004,11 +958,11 @@
     </div>
 
     <footer>
-      <button class="theme-toggle" onclick="toggleTheme()">
+      <button class="footer-btn" onclick="toggleTheme()">
         <span id="theme-icon">☀️</span>
         <span id="theme-label">Light</span>
       </button>
-      <a href="https://buymeacoffee.com/gpdx" target="_blank" rel="noopener noreferrer" class="donate-button">
+      <a href="https://buymeacoffee.com/gpdx" target="_blank" rel="noopener noreferrer" class="footer-btn">
         💲 Donate
       </a>
     </footer>
