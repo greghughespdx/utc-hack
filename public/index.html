@@ -691,6 +691,23 @@
       color: var(--text-muted);
     }
 
+    .bmc-button {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      background: var(--accent-terracotta);
+      color: white;
+      text-decoration: none;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      border-radius: 4px;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .bmc-button:hover {
+      background: var(--accent-brown);
+      transform: translateY(-1px);
+    }
+
     /* Responsive - iPhone optimized, fills viewport */
     @media (max-width: 600px) {
       .container {
@@ -961,8 +978,8 @@
         <span id="theme-icon">☀️</span>
         <span id="theme-label">Light</span>
       </button>
-      <a href="https://buymeacoffee.com/gpdx" target="_blank" rel="noopener noreferrer" style="margin-top: 0.5rem;">
-        <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 40px; width: auto;">
+      <a href="https://buymeacoffee.com/gpdx" target="_blank" rel="noopener noreferrer" class="bmc-button">
+        ☕ Buy me a coffee
       </a>
     </footer>
   </div>
