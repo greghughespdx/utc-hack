@@ -1,9 +1,111 @@
 import express from 'express';
 import path from 'path';
 import { find } from 'geo-tz';
+import SunCalc from 'suncalc';
 
 const app = express();
 const PORT = 3000;
+
+// Check if input looks like an airport code (ICAO or IATA)
+function isAirportCode(input: string): { isAirport: boolean; icaoCode: string } {
+  const code = input.trim().toUpperCase();
+
+  // 3-letter IATA code (assume US airport, prepend K)
+  if (/^[A-Z]{3}$/.test(code)) {
+    return { isAirport: true, icaoCode: 'K' + code };
+  }
+
+  // 4-letter ICAO code
+  if (/^[A-Z]{4}$/.test(code)) {
+    // Common region prefixes
+    const validPrefixes = ['K', 'C', 'E', 'L', 'U', 'Z', 'R', 'V', 'W', 'Y', 'P', 'N', 'S', 'F', 'D', 'H', 'O', 'B', 'G', 'M', 'T', 'A'];
+    if (validPrefixes.includes(code[0])) {
+      return { isAirport: true, icaoCode: code };
+    }
+  }
+
+  return { isAirport: false, icaoCode: '' };
+}
+
+// Lookup airport by ICAO code using Nominatim
+async function lookupAirport(icaoCode: string): Promise<{ lat: number; lon: number; displayName: string } | null> {
+  try {
+    const code = icaoCode.trim().toUpperCase();
+    // Search for airport by ICAO code
+    const url = `https://nominatim.openstreetmap.org/search?` +
+      `q=${encodeURIComponent(code + ' airport')}&format=json&limit=5&addressdetails=1`;
+
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'UTCTimeConverter/1.0 (educational project)'
+      }
+    });
+
+    if (!response.ok) return null;
+
+    const results = await response.json() as Array<{
+      lat: string;
+      lon: string;
+      display_name: string;
+      type?: string;
+      class?: string;
+    }>;
+
+    // Find result that's actually an airport/aerodrome
+    const airport = results.find(r =>
+      r.class === 'aeroway' ||
+      r.type === 'aerodrome' ||
+      r.display_name.toLowerCase().includes('airport') ||
+      r.display_name.toLowerCase().includes('aerodrome')
+    ) || results[0];
+
+    if (!airport) return null;
+
+    return {
+      lat: parseFloat(airport.lat),
+      lon: parseFloat(airport.lon),
+      displayName: `${code} - ${airport.display_name}`
+    };
+  } catch (error) {
+    console.error('Airport lookup error:', error);
+    return null;
+  }
+}
+
+// Calculate sun times for a location
+function getSunTimes(lat: number, lon: number, date: Date) {
+  const times = SunCalc.getTimes(date, lat, lon);
+
+  const formatTime = (d: Date, timezone: string) => {
+    if (isNaN(d.getTime())) return null;
+    return {
+      utc: d.toISOString(),
+      local: d.toLocaleTimeString('en-US', {
+        timeZone: timezone,
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      }),
+      zulu: d.toLocaleTimeString('en-US', {
+        timeZone: 'UTC',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      }) + 'Z'
+    };
+  };
+
+  return {
+    sunrise: times.sunrise,
+    sunset: times.sunset,
+    civilDawn: times.dawn,      // Civil twilight begins
+    civilDusk: times.dusk,      // Civil twilight ends
+    nauticalDawn: times.nauticalDawn,
+    nauticalDusk: times.nauticalDusk,
+    goldenHour: times.goldenHour,
+    goldenHourEnd: times.goldenHourEnd
+  };
+}
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../public')));
@@ -169,6 +271,7 @@ async function geocodeLocation(query: string): Promise<{ lat: number; lon: numbe
 // API: Lookup timezone for any location
 app.get('/api/location', async (req, res) => {
   const query = (req.query.q as string || '').trim();
+  const dateParam = req.query.date as string; // Optional date for sun times
 
   if (!query) {
     return res.status(400).json({ error: 'Location query required' });
@@ -176,11 +279,31 @@ app.get('/api/location', async (req, res) => {
 
   let timezone: string;
   let displayName: string;
+  let lat: number | null = null;
+  let lon: number | null = null;
 
-  // First, check if this is a single-timezone US state (no API call needed)
-  const stateMatch = checkSingleTimezoneState(query);
+  // First, check if this is an airport code
+  const airportCheck = isAirportCode(query);
 
-  if (stateMatch) {
+  if (airportCheck.isAirport) {
+    const airport = await lookupAirport(airportCheck.icaoCode);
+    if (airport) {
+      lat = airport.lat;
+      lon = airport.lon;
+      displayName = airport.displayName;
+      const timezones = find(lat, lon);
+      timezone = timezones[0] || 'UTC';
+      console.log(`[Airport] ${query} -> ${airportCheck.icaoCode} -> ${timezone}`);
+    } else {
+      return res.status(404).json({
+        error: 'Airport not found',
+        suggestion: `Could not find airport with code "${airportCheck.icaoCode}". Try the full airport name instead.`
+      });
+    }
+  }
+  // Check if this is a single-timezone US state (no API call needed)
+  else if (checkSingleTimezoneState(query)) {
+    const stateMatch = checkSingleTimezoneState(query)!;
     timezone = stateMatch.timezone;
     displayName = stateMatch.displayName;
     console.log(`[Optimized] Skipped API call for: ${query} -> ${timezone}`);
@@ -195,8 +318,11 @@ app.get('/api/location', async (req, res) => {
       });
     }
 
+    lat = location.lat;
+    lon = location.lon;
+
     // Get timezone from coordinates using geo-tz
-    const timezones = find(location.lat, location.lon);
+    const timezones = find(lat, lon);
 
     if (timezones.length === 0) {
       return res.status(404).json({ error: 'Could not determine timezone for location' });
@@ -208,6 +334,7 @@ app.get('/api/location', async (req, res) => {
 
   // Get current time info for this timezone
   const now = new Date();
+  const targetDate = dateParam ? new Date(dateParam) : now;
   const formatter = new Intl.DateTimeFormat('en-US', {
     timeZone: timezone,
     timeZoneName: 'short'
@@ -215,10 +342,44 @@ app.get('/api/location', async (req, res) => {
   const parts = formatter.formatToParts(now);
   const tzAbbr = parts.find(p => p.type === 'timeZoneName')?.value || '';
 
+  // Calculate sun times if we have coordinates
+  let sunTimes = null;
+  if (lat !== null && lon !== null) {
+    const times = getSunTimes(lat, lon, targetDate);
+
+    const formatSunTime = (d: Date) => {
+      if (!d || isNaN(d.getTime())) return null;
+      return {
+        utc: d.toISOString(),
+        zulu: d.toLocaleTimeString('en-US', {
+          timeZone: 'UTC',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        }) + 'Z',
+        local: d.toLocaleTimeString('en-US', {
+          timeZone: timezone,
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        })
+      };
+    };
+
+    sunTimes = {
+      civilDawn: formatSunTime(times.civilDawn),
+      sunrise: formatSunTime(times.sunrise),
+      sunset: formatSunTime(times.sunset),
+      civilDusk: formatSunTime(times.civilDusk)
+    };
+  }
+
   res.json({
     timezone,
     tzAbbreviation: tzAbbr,
-    displayName
+    displayName,
+    coordinates: lat !== null ? { lat, lon } : null,
+    sunTimes
   });
 });
 

@@ -596,6 +596,49 @@
       font-size: 1.25rem;
     }
 
+    /* Sun Times Section */
+    .sun-times {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .sun-times-header {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent-gold);
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .sun-times-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .sun-item {
+      text-align: center;
+      padding: 0.75rem;
+      background: var(--bg-secondary);
+      border-radius: 4px;
+    }
+
+    .sun-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .sun-value {
+      font-size: 1rem;
+      font-family: 'SF Mono', 'Consolas', monospace;
+      color: var(--accent-gold);
+    }
+
     .dst-indicator {
       display: inline-block;
       padding: 0.2rem 0.5rem;
@@ -896,6 +939,27 @@
           <div class="result-label" id="result-local-label">Local Time</div>
           <div class="result-value highlight" id="result-local">—</div>
         </div>
+        <div class="sun-times" id="sun-times" style="display: none;">
+          <div class="sun-times-header" id="sun-times-header">Sun Times (for selected date)</div>
+          <div class="sun-times-grid">
+            <div class="sun-item">
+              <div class="sun-label" id="civil-dawn-label">Civil Dawn</div>
+              <div class="sun-value" id="civil-dawn-time">—</div>
+            </div>
+            <div class="sun-item">
+              <div class="sun-label" id="sunrise-label">Sunrise</div>
+              <div class="sun-value" id="sunrise-time">—</div>
+            </div>
+            <div class="sun-item">
+              <div class="sun-label" id="sunset-label">Sunset</div>
+              <div class="sun-value" id="sunset-time">—</div>
+            </div>
+            <div class="sun-item">
+              <div class="sun-label" id="civil-dusk-label">Civil Dusk</div>
+              <div class="sun-value" id="civil-dusk-time">—</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -919,8 +983,8 @@
         localToUtc: 'Local Time → UTC',
         enterUtcDateTime: 'Enter UTC Date & Time',
         enterLocalDateTime: 'Enter Local Date & Time',
-        enterLocation: 'Enter Location (any city or town)',
-        locationPlaceholder: 'e.g., Lincoln, Montana or Missoula, MT',
+        enterLocation: 'Enter Location (any city, town, or airport code)',
+        locationPlaceholder: 'e.g., Lincoln, Montana or KJFK',
         convert: 'Convert',
         location: 'Location',
         timezone: 'Timezone',
@@ -937,7 +1001,12 @@
         locationNotFound: 'Location not found',
         lookupFailed: 'Lookup failed — try again',
         dst: 'DST',
-        noDst: 'No DST'
+        noDst: 'No DST',
+        sunTimesHeader: 'Sun Times (for selected date)',
+        civilDawn: 'Civil Dawn',
+        sunrise: 'Sunrise',
+        sunset: 'Sunset',
+        civilDusk: 'Civil Dusk'
       },
       de: {
         timeConverter: 'Zeitumrechner',
@@ -947,8 +1016,8 @@
         localToUtc: 'Ortszeit → UTC',
         enterUtcDateTime: 'UTC-Datum & Zeit eingeben',
         enterLocalDateTime: 'Lokales Datum & Zeit eingeben',
-        enterLocation: 'Ort eingeben (Stadt oder Gemeinde)',
-        locationPlaceholder: 'z.B. Berlin, München oder Frankfurt',
+        enterLocation: 'Ort oder Flughafencode eingeben',
+        locationPlaceholder: 'z.B. Berlin, München oder EDDF',
         convert: 'Umrechnen',
         location: 'Ort',
         timezone: 'Zeitzone',
@@ -965,7 +1034,12 @@
         locationNotFound: 'Ort nicht gefunden',
         lookupFailed: 'Suche fehlgeschlagen',
         dst: 'Sommerzeit',
-        noDst: 'Keine Sommerzeit'
+        noDst: 'Keine Sommerzeit',
+        sunTimesHeader: 'Sonnenzeiten (für gewähltes Datum)',
+        civilDawn: 'Bürgerliche Dämmerung',
+        sunrise: 'Sonnenaufgang',
+        sunset: 'Sonnenuntergang',
+        civilDusk: 'Bürgerliche Abenddämmerung'
       },
       fr: {
         timeConverter: 'Convertisseur horaire',
@@ -975,8 +1049,8 @@
         localToUtc: 'Heure locale → UTC',
         enterUtcDateTime: 'Entrer date et heure UTC',
         enterLocalDateTime: 'Entrer date et heure locale',
-        enterLocation: 'Entrer un lieu (ville)',
-        locationPlaceholder: 'ex: Paris, Lyon ou Marseille',
+        enterLocation: 'Entrer un lieu ou code aéroport',
+        locationPlaceholder: 'ex: Paris, Lyon ou LFPG',
         convert: 'Convertir',
         location: 'Lieu',
         timezone: 'Fuseau horaire',
@@ -993,7 +1067,12 @@
         locationNotFound: 'Lieu non trouvé',
         lookupFailed: 'Échec de la recherche',
         dst: 'Heure d\'été',
-        noDst: 'Pas d\'heure d\'été'
+        noDst: 'Pas d\'heure d\'été',
+        sunTimesHeader: 'Heures du soleil (pour la date sélectionnée)',
+        civilDawn: 'Aube civile',
+        sunrise: 'Lever du soleil',
+        sunset: 'Coucher du soleil',
+        civilDusk: 'Crépuscule civil'
       },
       es: {
         timeConverter: 'Convertidor horario',
@@ -1003,8 +1082,8 @@
         localToUtc: 'Hora local → UTC',
         enterUtcDateTime: 'Ingrese fecha y hora UTC',
         enterLocalDateTime: 'Ingrese fecha y hora local',
-        enterLocation: 'Ingrese ubicación (ciudad)',
-        locationPlaceholder: 'ej: Madrid, México DF o Buenos Aires',
+        enterLocation: 'Ingrese ubicación o código de aeropuerto',
+        locationPlaceholder: 'ej: Madrid, México DF o LEMD',
         convert: 'Convertir',
         location: 'Ubicación',
         timezone: 'Zona horaria',
@@ -1021,7 +1100,12 @@
         locationNotFound: 'Ubicación no encontrada',
         lookupFailed: 'Error en la búsqueda',
         dst: 'Horario de verano',
-        noDst: 'Sin horario de verano'
+        noDst: 'Sin horario de verano',
+        sunTimesHeader: 'Horas del sol (para fecha seleccionada)',
+        civilDawn: 'Amanecer civil',
+        sunrise: 'Salida del sol',
+        sunset: 'Puesta del sol',
+        civilDusk: 'Crepúsculo civil'
       },
       pt: {
         timeConverter: 'Conversor de horário',
@@ -1031,8 +1115,8 @@
         localToUtc: 'Hora local → UTC',
         enterUtcDateTime: 'Digite data e hora UTC',
         enterLocalDateTime: 'Digite data e hora local',
-        enterLocation: 'Digite localização (cidade)',
-        locationPlaceholder: 'ex: São Paulo, Rio de Janeiro ou Brasília',
+        enterLocation: 'Digite localização ou código do aeroporto',
+        locationPlaceholder: 'ex: São Paulo, Rio de Janeiro ou SBGR',
         convert: 'Converter',
         location: 'Localização',
         timezone: 'Fuso horário',
@@ -1049,7 +1133,12 @@
         locationNotFound: 'Local não encontrado',
         lookupFailed: 'Falha na busca',
         dst: 'Horário de verão',
-        noDst: 'Sem horário de verão'
+        noDst: 'Sem horário de verão',
+        sunTimesHeader: 'Horários do sol (para data selecionada)',
+        civilDawn: 'Aurora civil',
+        sunrise: 'Nascer do sol',
+        sunset: 'Pôr do sol',
+        civilDusk: 'Crepúsculo civil'
       },
       it: {
         timeConverter: 'Convertitore orario',
@@ -1059,8 +1148,8 @@
         localToUtc: 'Ora locale → UTC',
         enterUtcDateTime: 'Inserisci data e ora UTC',
         enterLocalDateTime: 'Inserisci data e ora locale',
-        enterLocation: 'Inserisci località (città)',
-        locationPlaceholder: 'es: Roma, Milano o Napoli',
+        enterLocation: 'Inserisci località o codice aeroporto',
+        locationPlaceholder: 'es: Roma, Milano o LIRF',
         convert: 'Converti',
         location: 'Località',
         timezone: 'Fuso orario',
@@ -1077,7 +1166,12 @@
         locationNotFound: 'Località non trovata',
         lookupFailed: 'Ricerca fallita',
         dst: 'Ora legale',
-        noDst: 'Nessuna ora legale'
+        noDst: 'Nessuna ora legale',
+        sunTimesHeader: 'Orari del sole (per data selezionata)',
+        civilDawn: 'Alba civile',
+        sunrise: 'Alba',
+        sunset: 'Tramonto',
+        civilDusk: 'Crepuscolo civile'
       },
       pl: {
         timeConverter: 'Konwerter czasu',
@@ -1087,8 +1181,8 @@
         localToUtc: 'Czas lokalny → UTC',
         enterUtcDateTime: 'Wprowadź datę i czas UTC',
         enterLocalDateTime: 'Wprowadź lokalną datę i czas',
-        enterLocation: 'Wprowadź lokalizację (miasto)',
-        locationPlaceholder: 'np. Warszawa, Kraków lub Gdańsk',
+        enterLocation: 'Wprowadź lokalizację lub kod lotniska',
+        locationPlaceholder: 'np. Warszawa, Kraków lub EPWA',
         convert: 'Konwertuj',
         location: 'Lokalizacja',
         timezone: 'Strefa czasowa',
@@ -1105,7 +1199,12 @@
         locationNotFound: 'Nie znaleziono lokalizacji',
         lookupFailed: 'Wyszukiwanie nie powiodło się',
         dst: 'Czas letni',
-        noDst: 'Bez czasu letniego'
+        noDst: 'Bez czasu letniego',
+        sunTimesHeader: 'Godziny słoneczne (dla wybranej daty)',
+        civilDawn: 'Świt cywilny',
+        sunrise: 'Wschód słońca',
+        sunset: 'Zachód słońca',
+        civilDusk: 'Zmierzch cywilny'
       },
       nl: {
         timeConverter: 'Tijdconverter',
@@ -1115,8 +1214,8 @@
         localToUtc: 'Lokale tijd → UTC',
         enterUtcDateTime: 'Voer UTC-datum en tijd in',
         enterLocalDateTime: 'Voer lokale datum en tijd in',
-        enterLocation: 'Voer locatie in (stad)',
-        locationPlaceholder: 'bijv. Amsterdam, Rotterdam of Utrecht',
+        enterLocation: 'Voer locatie of luchthavencode in',
+        locationPlaceholder: 'bijv. Amsterdam, Rotterdam of EHAM',
         convert: 'Converteren',
         location: 'Locatie',
         timezone: 'Tijdzone',
@@ -1133,7 +1232,12 @@
         locationNotFound: 'Locatie niet gevonden',
         lookupFailed: 'Zoeken mislukt',
         dst: 'Zomertijd',
-        noDst: 'Geen zomertijd'
+        noDst: 'Geen zomertijd',
+        sunTimesHeader: 'Zonnetijden (voor geselecteerde datum)',
+        civilDawn: 'Burgerlijke dageraad',
+        sunrise: 'Zonsopgang',
+        sunset: 'Zonsondergang',
+        civilDusk: 'Burgerlijke schemering'
       },
       ru: {
         timeConverter: 'Конвертер времени',
@@ -1143,8 +1247,8 @@
         localToUtc: 'Местное время → UTC',
         enterUtcDateTime: 'Введите дату и время UTC',
         enterLocalDateTime: 'Введите местную дату и время',
-        enterLocation: 'Введите местоположение (город)',
-        locationPlaceholder: 'напр. Москва, Санкт-Петербург',
+        enterLocation: 'Введите местоположение или код аэропорта',
+        locationPlaceholder: 'напр. Москва, Санкт-Петербург или UUEE',
         convert: 'Конвертировать',
         location: 'Местоположение',
         timezone: 'Часовой пояс',
@@ -1161,7 +1265,12 @@
         locationNotFound: 'Местоположение не найдено',
         lookupFailed: 'Ошибка поиска',
         dst: 'Летнее время',
-        noDst: 'Без летнего времени'
+        noDst: 'Без летнего времени',
+        sunTimesHeader: 'Время солнца (для выбранной даты)',
+        civilDawn: 'Гражданский рассвет',
+        sunrise: 'Восход',
+        sunset: 'Закат',
+        civilDusk: 'Гражданские сумерки'
       },
       ja: {
         timeConverter: '時間変換',
@@ -1171,8 +1280,8 @@
         localToUtc: '現地時間 → UTC',
         enterUtcDateTime: 'UTC日時を入力',
         enterLocalDateTime: '現地日時を入力',
-        enterLocation: '場所を入力（都市名）',
-        locationPlaceholder: '例：東京、大阪、名古屋',
+        enterLocation: '場所または空港コードを入力',
+        locationPlaceholder: '例：東京、大阪、RJTT',
         convert: '変換',
         location: '場所',
         timezone: 'タイムゾーン',
@@ -1189,7 +1298,12 @@
         locationNotFound: '場所が見つかりません',
         lookupFailed: '検索に失敗しました',
         dst: '夏時間',
-        noDst: '夏時間なし'
+        noDst: '夏時間なし',
+        sunTimesHeader: '太陽時刻（選択した日付）',
+        civilDawn: '市民薄明',
+        sunrise: '日の出',
+        sunset: '日の入り',
+        civilDusk: '市民薄暮'
       },
       zh: {
         timeConverter: '时间转换器',
@@ -1199,8 +1313,8 @@
         localToUtc: '本地时间 → UTC',
         enterUtcDateTime: '输入UTC日期和时间',
         enterLocalDateTime: '输入本地日期和时间',
-        enterLocation: '输入位置（城市）',
-        locationPlaceholder: '例如：北京、上海、广州',
+        enterLocation: '输入位置或机场代码',
+        locationPlaceholder: '例如：北京、上海、ZBAA',
         convert: '转换',
         location: '位置',
         timezone: '时区',
@@ -1217,7 +1331,12 @@
         locationNotFound: '未找到位置',
         lookupFailed: '搜索失败',
         dst: '夏令时',
-        noDst: '无夏令时'
+        noDst: '无夏令时',
+        sunTimesHeader: '太阳时间（所选日期）',
+        civilDawn: '民用曙光',
+        sunrise: '日出',
+        sunset: '日落',
+        civilDusk: '民用暮光'
       },
       ko: {
         timeConverter: '시간 변환기',
@@ -1227,8 +1346,8 @@
         localToUtc: '현지 시간 → UTC',
         enterUtcDateTime: 'UTC 날짜 및 시간 입력',
         enterLocalDateTime: '현지 날짜 및 시간 입력',
-        enterLocation: '위치 입력 (도시)',
-        locationPlaceholder: '예: 서울, 부산, 인천',
+        enterLocation: '위치 또는 공항 코드 입력',
+        locationPlaceholder: '예: 서울, 부산, RKSI',
         convert: '변환',
         location: '위치',
         timezone: '시간대',
@@ -1245,7 +1364,12 @@
         locationNotFound: '위치를 찾을 수 없음',
         lookupFailed: '검색 실패',
         dst: '일광 절약 시간',
-        noDst: '일광 절약 시간 없음'
+        noDst: '일광 절약 시간 없음',
+        sunTimesHeader: '태양 시간 (선택한 날짜)',
+        civilDawn: '시민 박명',
+        sunrise: '일출',
+        sunset: '일몰',
+        civilDusk: '시민 황혼'
       },
       ar: {
         timeConverter: 'محول الوقت',
@@ -1255,8 +1379,8 @@
         localToUtc: 'الوقت المحلي ← UTC',
         enterUtcDateTime: 'أدخل تاريخ ووقت UTC',
         enterLocalDateTime: 'أدخل التاريخ والوقت المحلي',
-        enterLocation: 'أدخل الموقع (المدينة)',
-        locationPlaceholder: 'مثال: دبي، الرياض، القاهرة',
+        enterLocation: 'أدخل الموقع أو رمز المطار',
+        locationPlaceholder: 'مثال: دبي، الرياض، OMDB',
         convert: 'تحويل',
         location: 'الموقع',
         timezone: 'المنطقة الزمنية',
@@ -1273,7 +1397,12 @@
         locationNotFound: 'الموقع غير موجود',
         lookupFailed: 'فشل البحث',
         dst: 'التوقيت الصيفي',
-        noDst: 'بدون توقيت صيفي'
+        noDst: 'بدون توقيت صيفي',
+        sunTimesHeader: 'أوقات الشمس (للتاريخ المحدد)',
+        civilDawn: 'الفجر المدني',
+        sunrise: 'شروق الشمس',
+        sunset: 'غروب الشمس',
+        civilDusk: 'الغسق المدني'
       }
     };
 
@@ -1287,6 +1416,7 @@
     let currentDirection = 'toLocal';
     let resolvedTimezone = null;
     let resolvedDisplayName = null;
+    let resolvedSunTimes = null;
     const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
     // Apply translations to the page
@@ -1322,6 +1452,13 @@
         // Footer
         document.getElementById('detected-tz-text').textContent = t.detectedTimezone;
         document.getElementById('theme-label').textContent = t.light;
+
+        // Sun times labels
+        document.getElementById('sun-times-header').textContent = t.sunTimesHeader;
+        document.getElementById('civil-dawn-label').textContent = t.civilDawn;
+        document.getElementById('sunrise-label').textContent = t.sunrise;
+        document.getElementById('sunset-label').textContent = t.sunset;
+        document.getElementById('civil-dusk-label').textContent = t.civilDusk;
 
         // Set HTML lang attribute
         document.documentElement.lang = currentLang;
@@ -1399,6 +1536,7 @@
         feedback.textContent = '';
         feedback.className = 'location-feedback';
         resolvedTimezone = null;
+        resolvedSunTimes = null;
         return;
       }
 
@@ -1412,10 +1550,12 @@
         if (data.timezone) {
           resolvedTimezone = data.timezone;
           resolvedDisplayName = data.displayName;
+          resolvedSunTimes = data.sunTimes || null;
           feedback.textContent = `✓ ${data.timezone} (${data.tzAbbreviation})`;
           feedback.className = 'location-feedback success';
         } else {
           resolvedTimezone = null;
+          resolvedSunTimes = null;
           feedback.textContent = t.locationNotFound;
           feedback.className = 'location-feedback error';
         }
@@ -1483,10 +1623,42 @@
           utcEl.classList.add('highlight');
         }
 
+        // Display sun times if available
+        displaySunTimes(resolvedTimezone);
+
         document.getElementById('result').classList.add('visible');
       } catch (e) {
         alert('Conversion failed');
       }
+    }
+
+    function displaySunTimes(timezone) {
+      const sunTimesEl = document.getElementById('sun-times');
+
+      if (!resolvedSunTimes) {
+        sunTimesEl.style.display = 'none';
+        return;
+      }
+
+      // Format time in the target timezone
+      const formatSunTime = (isoString) => {
+        if (!isoString) return '—';
+        const date = new Date(isoString);
+        if (isNaN(date.getTime())) return '—';
+        return date.toLocaleTimeString('en-US', {
+          timeZone: timezone,
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        });
+      };
+
+      document.getElementById('civil-dawn-time').textContent = formatSunTime(resolvedSunTimes.civilDawn);
+      document.getElementById('sunrise-time').textContent = formatSunTime(resolvedSunTimes.sunrise);
+      document.getElementById('sunset-time').textContent = formatSunTime(resolvedSunTimes.sunset);
+      document.getElementById('civil-dusk-time').textContent = formatSunTime(resolvedSunTimes.civilDusk);
+
+      sunTimesEl.style.display = 'block';
     }
 
     function shortenDisplayName(name) {
