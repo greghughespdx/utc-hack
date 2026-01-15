@@ -687,13 +687,13 @@
     }
 
 
-    .footer-buttons {
-      display: flex;
-      gap: 1rem;
+    .theme-toggle,
+    .donate-button {
+      width: 120px;
       justify-content: center;
     }
 
-    .bmc-button {
+    .donate-button {
       background: transparent;
       border: 1px solid var(--border-color);
       padding: 0.5rem 1.25rem;
@@ -710,8 +710,8 @@
       position: relative;
     }
 
-    .bmc-button::before,
-    .bmc-button::after {
+    .donate-button::before,
+    .donate-button::after {
       content: '';
       position: absolute;
       width: 8px;
@@ -720,21 +720,21 @@
       opacity: 0.6;
     }
 
-    .bmc-button::before {
+    .donate-button::before {
       top: -1px;
       left: -1px;
       border-right: none;
       border-bottom: none;
     }
 
-    .bmc-button::after {
+    .donate-button::after {
       bottom: -1px;
       right: -1px;
       border-left: none;
       border-top: none;
     }
 
-    .bmc-button:hover {
+    .donate-button:hover {
       border-color: var(--accent-gold);
       color: var(--text-secondary);
     }
@@ -1004,15 +1004,13 @@
     </div>
 
     <footer>
-      <div class="footer-buttons">
-        <button class="theme-toggle" onclick="toggleTheme()">
-          <span id="theme-icon">☀️</span>
-          <span id="theme-label">Light</span>
-        </button>
-        <a href="https://buymeacoffee.com/gpdx" target="_blank" rel="noopener noreferrer" class="bmc-button">
-          ☕ Coffee
-        </a>
-      </div>
+      <button class="theme-toggle" onclick="toggleTheme()">
+        <span id="theme-icon">☀️</span>
+        <span id="theme-label">Light</span>
+      </button>
+      <a href="https://buymeacoffee.com/gpdx" target="_blank" rel="noopener noreferrer" class="donate-button">
+        💲 Donate
+      </a>
     </footer>
   </div>
 
