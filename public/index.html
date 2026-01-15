@@ -838,11 +838,11 @@
 
     <div class="clocks-strip">
       <div class="clock-item">
-        <div class="clock-label">UTC</div>
+        <div class="clock-label" id="utc-label">UTC</div>
         <div class="clock-time" id="utc-clock">--:--:--</div>
       </div>
       <div class="clock-item local">
-        <div class="clock-label">Local</div>
+        <div class="clock-label" id="local-label">Local</div>
         <div class="clock-time" id="local-clock">--:--:--</div>
       </div>
     </div>
@@ -871,7 +871,7 @@
       <div class="step">
         <div class="step-header">
           <span class="step-number">2</span>
-          <span class="step-label">Enter Location (any city or town)</span>
+          <span class="step-label" id="location-step-label">Enter Location (any city or town)</span>
         </div>
         <input type="text" id="location-input" placeholder="e.g., Lincoln, Montana or Missoula, MT">
         <div class="location-feedback" id="location-feedback"></div>
@@ -881,11 +881,11 @@
 
       <div class="result" id="result">
         <div class="result-row">
-          <div class="result-label">Location</div>
+          <div class="result-label" id="result-location-label">Location</div>
           <div class="result-value" id="result-location">—</div>
         </div>
         <div class="result-row">
-          <div class="result-label">Timezone</div>
+          <div class="result-label" id="result-timezone-label">Timezone</div>
           <div class="result-value" id="result-timezone">—</div>
         </div>
         <div class="result-row">
@@ -900,7 +900,7 @@
     </div>
 
     <footer>
-      <p class="detected-tz">Your detected timezone: <span id="user-tz"></span></p>
+      <p class="detected-tz"><span id="detected-tz-text">Your detected timezone:</span> <span id="user-tz"></span></p>
       <button class="theme-toggle" onclick="toggleTheme()">
         <span id="theme-icon">☀️</span>
         <span id="theme-label">Light</span>
@@ -1291,29 +1291,47 @@
 
     // Apply translations to the page
     function applyTranslations() {
-      // Static elements
-      document.querySelector('.card-title').textContent = t.timeConverter;
-      document.querySelector('.clock-item:first-child .clock-label').textContent = t.utc;
-      document.querySelector('.clock-item.local .clock-label').textContent = t.local;
-      document.querySelector('[data-direction="toLocal"]').textContent = t.utcToLocal;
-      document.querySelector('[data-direction="toUTC"]').textContent = t.localToUtc;
-      document.getElementById('time-step-label').textContent = t.enterUtcDateTime;
-      document.querySelector('.step:nth-child(3) .step-label').textContent = t.enterLocation;
-      document.getElementById('location-input').placeholder = t.locationPlaceholder;
-      document.getElementById('convert-btn').textContent = t.convert;
-      document.querySelector('.result-row:nth-child(1) .result-label').textContent = t.location;
-      document.querySelector('.result-row:nth-child(2) .result-label').textContent = t.timezone;
-      document.getElementById('result-utc-label').textContent = t.utcTime;
-      document.getElementById('result-local-label').textContent = t.localTime;
-      document.querySelector('.detected-tz').firstChild.textContent = t.detectedTimezone + ' ';
-      document.getElementById('theme-label').textContent = t.light;
+      try {
+        // Clock labels
+        document.getElementById('utc-label').textContent = t.utc;
+        document.getElementById('local-label').textContent = t.local;
 
-      // Set HTML lang attribute
-      document.documentElement.lang = currentLang;
+        // Card title
+        document.querySelector('.card-title').textContent = t.timeConverter;
 
-      // Set text direction for Arabic
-      if (currentLang === 'ar') {
-        document.documentElement.dir = 'rtl';
+        // Direction buttons
+        document.querySelector('[data-direction="toLocal"]').textContent = t.utcToLocal;
+        document.querySelector('[data-direction="toUTC"]').textContent = t.localToUtc;
+
+        // Step labels
+        document.getElementById('time-step-label').textContent = t.enterUtcDateTime;
+        document.getElementById('location-step-label').textContent = t.enterLocation;
+
+        // Input placeholder
+        document.getElementById('location-input').placeholder = t.locationPlaceholder;
+
+        // Convert button
+        document.getElementById('convert-btn').textContent = t.convert;
+
+        // Result labels
+        document.getElementById('result-location-label').textContent = t.location;
+        document.getElementById('result-timezone-label').textContent = t.timezone;
+        document.getElementById('result-utc-label').textContent = t.utcTime;
+        document.getElementById('result-local-label').textContent = t.localTime;
+
+        // Footer
+        document.getElementById('detected-tz-text').textContent = t.detectedTimezone;
+        document.getElementById('theme-label').textContent = t.light;
+
+        // Set HTML lang attribute
+        document.documentElement.lang = currentLang;
+
+        // Set text direction for Arabic
+        if (currentLang === 'ar') {
+          document.documentElement.dir = 'rtl';
+        }
+      } catch (e) {
+        console.error('Translation error:', e);
       }
     }
 
