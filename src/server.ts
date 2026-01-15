@@ -352,6 +352,17 @@ app.get('/api/timezones', (_req, res) => {
   res.json(timezones);
 });
 
+// Serve index.html for all language routes
+const supportedLangs = ['de', 'fr', 'es', 'pt', 'it', 'pl', 'nl', 'ru', 'ja', 'zh', 'ko', 'ar'];
+supportedLangs.forEach(lang => {
+  app.get(`/${lang}`, (_req, res) => {
+    res.sendFile(path.join(__dirname, '../public/index.html'));
+  });
+  app.get(`/${lang}/`, (_req, res) => {
+    res.sendFile(path.join(__dirname, '../public/index.html'));
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`🌍 UTC Time Converter running at http://localhost:${PORT}`);
 });

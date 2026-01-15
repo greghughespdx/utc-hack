@@ -10,6 +10,22 @@
   <meta name="keywords" content="UTC, Zulu time, pilot, aviation, flight planning, timezone converter, GMT, METAR, TAF, world clock, DST, ATC, international flights">
   <link rel="canonical" href="https://utchack.com/">
 
+  <!-- Hreflang tags for international SEO -->
+  <link rel="alternate" hreflang="en" href="https://utchack.com/">
+  <link rel="alternate" hreflang="de" href="https://utchack.com/de/">
+  <link rel="alternate" hreflang="fr" href="https://utchack.com/fr/">
+  <link rel="alternate" hreflang="es" href="https://utchack.com/es/">
+  <link rel="alternate" hreflang="pt" href="https://utchack.com/pt/">
+  <link rel="alternate" hreflang="it" href="https://utchack.com/it/">
+  <link rel="alternate" hreflang="pl" href="https://utchack.com/pl/">
+  <link rel="alternate" hreflang="nl" href="https://utchack.com/nl/">
+  <link rel="alternate" hreflang="ru" href="https://utchack.com/ru/">
+  <link rel="alternate" hreflang="ja" href="https://utchack.com/ja/">
+  <link rel="alternate" hreflang="zh" href="https://utchack.com/zh/">
+  <link rel="alternate" hreflang="ko" href="https://utchack.com/ko/">
+  <link rel="alternate" hreflang="ar" href="https://utchack.com/ar/">
+  <link rel="alternate" hreflang="x-default" href="https://utchack.com/">
+
   <!-- Open Graph / Social Sharing -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://utchack.com/">
@@ -893,14 +909,417 @@
   </div>
 
   <script>
+    // Translations for all supported languages
+    const translations = {
+      en: {
+        timeConverter: 'Time Converter',
+        utc: 'UTC',
+        local: 'Local',
+        utcToLocal: 'UTC → Local Time',
+        localToUtc: 'Local Time → UTC',
+        enterUtcDateTime: 'Enter UTC Date & Time',
+        enterLocalDateTime: 'Enter Local Date & Time',
+        enterLocation: 'Enter Location (any city or town)',
+        locationPlaceholder: 'e.g., Lincoln, Montana or Missoula, MT',
+        convert: 'Convert',
+        location: 'Location',
+        timezone: 'Timezone',
+        utcTime: 'UTC Time',
+        localTime: 'Local Time',
+        utcTimeInput: 'UTC Time (input)',
+        localTimeResult: 'Local Time (result)',
+        utcTimeResult: 'UTC Time (result)',
+        localTimeInput: 'Local Time (input)',
+        detectedTimezone: 'Your detected timezone:',
+        light: 'Light',
+        dark: 'Dark',
+        lookingUp: 'Looking up...',
+        locationNotFound: 'Location not found',
+        lookupFailed: 'Lookup failed — try again',
+        dst: 'DST',
+        noDst: 'No DST'
+      },
+      de: {
+        timeConverter: 'Zeitumrechner',
+        utc: 'UTC',
+        local: 'Lokal',
+        utcToLocal: 'UTC → Ortszeit',
+        localToUtc: 'Ortszeit → UTC',
+        enterUtcDateTime: 'UTC-Datum & Zeit eingeben',
+        enterLocalDateTime: 'Lokales Datum & Zeit eingeben',
+        enterLocation: 'Ort eingeben (Stadt oder Gemeinde)',
+        locationPlaceholder: 'z.B. Berlin, München oder Frankfurt',
+        convert: 'Umrechnen',
+        location: 'Ort',
+        timezone: 'Zeitzone',
+        utcTime: 'UTC-Zeit',
+        localTime: 'Ortszeit',
+        utcTimeInput: 'UTC-Zeit (Eingabe)',
+        localTimeResult: 'Ortszeit (Ergebnis)',
+        utcTimeResult: 'UTC-Zeit (Ergebnis)',
+        localTimeInput: 'Ortszeit (Eingabe)',
+        detectedTimezone: 'Erkannte Zeitzone:',
+        light: 'Hell',
+        dark: 'Dunkel',
+        lookingUp: 'Suche...',
+        locationNotFound: 'Ort nicht gefunden',
+        lookupFailed: 'Suche fehlgeschlagen',
+        dst: 'Sommerzeit',
+        noDst: 'Keine Sommerzeit'
+      },
+      fr: {
+        timeConverter: 'Convertisseur horaire',
+        utc: 'UTC',
+        local: 'Local',
+        utcToLocal: 'UTC → Heure locale',
+        localToUtc: 'Heure locale → UTC',
+        enterUtcDateTime: 'Entrer date et heure UTC',
+        enterLocalDateTime: 'Entrer date et heure locale',
+        enterLocation: 'Entrer un lieu (ville)',
+        locationPlaceholder: 'ex: Paris, Lyon ou Marseille',
+        convert: 'Convertir',
+        location: 'Lieu',
+        timezone: 'Fuseau horaire',
+        utcTime: 'Heure UTC',
+        localTime: 'Heure locale',
+        utcTimeInput: 'Heure UTC (entrée)',
+        localTimeResult: 'Heure locale (résultat)',
+        utcTimeResult: 'Heure UTC (résultat)',
+        localTimeInput: 'Heure locale (entrée)',
+        detectedTimezone: 'Fuseau horaire détecté:',
+        light: 'Clair',
+        dark: 'Sombre',
+        lookingUp: 'Recherche...',
+        locationNotFound: 'Lieu non trouvé',
+        lookupFailed: 'Échec de la recherche',
+        dst: 'Heure d\'été',
+        noDst: 'Pas d\'heure d\'été'
+      },
+      es: {
+        timeConverter: 'Convertidor horario',
+        utc: 'UTC',
+        local: 'Local',
+        utcToLocal: 'UTC → Hora local',
+        localToUtc: 'Hora local → UTC',
+        enterUtcDateTime: 'Ingrese fecha y hora UTC',
+        enterLocalDateTime: 'Ingrese fecha y hora local',
+        enterLocation: 'Ingrese ubicación (ciudad)',
+        locationPlaceholder: 'ej: Madrid, México DF o Buenos Aires',
+        convert: 'Convertir',
+        location: 'Ubicación',
+        timezone: 'Zona horaria',
+        utcTime: 'Hora UTC',
+        localTime: 'Hora local',
+        utcTimeInput: 'Hora UTC (entrada)',
+        localTimeResult: 'Hora local (resultado)',
+        utcTimeResult: 'Hora UTC (resultado)',
+        localTimeInput: 'Hora local (entrada)',
+        detectedTimezone: 'Zona horaria detectada:',
+        light: 'Claro',
+        dark: 'Oscuro',
+        lookingUp: 'Buscando...',
+        locationNotFound: 'Ubicación no encontrada',
+        lookupFailed: 'Error en la búsqueda',
+        dst: 'Horario de verano',
+        noDst: 'Sin horario de verano'
+      },
+      pt: {
+        timeConverter: 'Conversor de horário',
+        utc: 'UTC',
+        local: 'Local',
+        utcToLocal: 'UTC → Hora local',
+        localToUtc: 'Hora local → UTC',
+        enterUtcDateTime: 'Digite data e hora UTC',
+        enterLocalDateTime: 'Digite data e hora local',
+        enterLocation: 'Digite localização (cidade)',
+        locationPlaceholder: 'ex: São Paulo, Rio de Janeiro ou Brasília',
+        convert: 'Converter',
+        location: 'Localização',
+        timezone: 'Fuso horário',
+        utcTime: 'Hora UTC',
+        localTime: 'Hora local',
+        utcTimeInput: 'Hora UTC (entrada)',
+        localTimeResult: 'Hora local (resultado)',
+        utcTimeResult: 'Hora UTC (resultado)',
+        localTimeInput: 'Hora local (entrada)',
+        detectedTimezone: 'Fuso horário detectado:',
+        light: 'Claro',
+        dark: 'Escuro',
+        lookingUp: 'Procurando...',
+        locationNotFound: 'Local não encontrado',
+        lookupFailed: 'Falha na busca',
+        dst: 'Horário de verão',
+        noDst: 'Sem horário de verão'
+      },
+      it: {
+        timeConverter: 'Convertitore orario',
+        utc: 'UTC',
+        local: 'Locale',
+        utcToLocal: 'UTC → Ora locale',
+        localToUtc: 'Ora locale → UTC',
+        enterUtcDateTime: 'Inserisci data e ora UTC',
+        enterLocalDateTime: 'Inserisci data e ora locale',
+        enterLocation: 'Inserisci località (città)',
+        locationPlaceholder: 'es: Roma, Milano o Napoli',
+        convert: 'Converti',
+        location: 'Località',
+        timezone: 'Fuso orario',
+        utcTime: 'Ora UTC',
+        localTime: 'Ora locale',
+        utcTimeInput: 'Ora UTC (input)',
+        localTimeResult: 'Ora locale (risultato)',
+        utcTimeResult: 'Ora UTC (risultato)',
+        localTimeInput: 'Ora locale (input)',
+        detectedTimezone: 'Fuso orario rilevato:',
+        light: 'Chiaro',
+        dark: 'Scuro',
+        lookingUp: 'Ricerca...',
+        locationNotFound: 'Località non trovata',
+        lookupFailed: 'Ricerca fallita',
+        dst: 'Ora legale',
+        noDst: 'Nessuna ora legale'
+      },
+      pl: {
+        timeConverter: 'Konwerter czasu',
+        utc: 'UTC',
+        local: 'Lokalny',
+        utcToLocal: 'UTC → Czas lokalny',
+        localToUtc: 'Czas lokalny → UTC',
+        enterUtcDateTime: 'Wprowadź datę i czas UTC',
+        enterLocalDateTime: 'Wprowadź lokalną datę i czas',
+        enterLocation: 'Wprowadź lokalizację (miasto)',
+        locationPlaceholder: 'np. Warszawa, Kraków lub Gdańsk',
+        convert: 'Konwertuj',
+        location: 'Lokalizacja',
+        timezone: 'Strefa czasowa',
+        utcTime: 'Czas UTC',
+        localTime: 'Czas lokalny',
+        utcTimeInput: 'Czas UTC (wejście)',
+        localTimeResult: 'Czas lokalny (wynik)',
+        utcTimeResult: 'Czas UTC (wynik)',
+        localTimeInput: 'Czas lokalny (wejście)',
+        detectedTimezone: 'Wykryta strefa czasowa:',
+        light: 'Jasny',
+        dark: 'Ciemny',
+        lookingUp: 'Szukam...',
+        locationNotFound: 'Nie znaleziono lokalizacji',
+        lookupFailed: 'Wyszukiwanie nie powiodło się',
+        dst: 'Czas letni',
+        noDst: 'Bez czasu letniego'
+      },
+      nl: {
+        timeConverter: 'Tijdconverter',
+        utc: 'UTC',
+        local: 'Lokaal',
+        utcToLocal: 'UTC → Lokale tijd',
+        localToUtc: 'Lokale tijd → UTC',
+        enterUtcDateTime: 'Voer UTC-datum en tijd in',
+        enterLocalDateTime: 'Voer lokale datum en tijd in',
+        enterLocation: 'Voer locatie in (stad)',
+        locationPlaceholder: 'bijv. Amsterdam, Rotterdam of Utrecht',
+        convert: 'Converteren',
+        location: 'Locatie',
+        timezone: 'Tijdzone',
+        utcTime: 'UTC-tijd',
+        localTime: 'Lokale tijd',
+        utcTimeInput: 'UTC-tijd (invoer)',
+        localTimeResult: 'Lokale tijd (resultaat)',
+        utcTimeResult: 'UTC-tijd (resultaat)',
+        localTimeInput: 'Lokale tijd (invoer)',
+        detectedTimezone: 'Gedetecteerde tijdzone:',
+        light: 'Licht',
+        dark: 'Donker',
+        lookingUp: 'Zoeken...',
+        locationNotFound: 'Locatie niet gevonden',
+        lookupFailed: 'Zoeken mislukt',
+        dst: 'Zomertijd',
+        noDst: 'Geen zomertijd'
+      },
+      ru: {
+        timeConverter: 'Конвертер времени',
+        utc: 'UTC',
+        local: 'Местное',
+        utcToLocal: 'UTC → Местное время',
+        localToUtc: 'Местное время → UTC',
+        enterUtcDateTime: 'Введите дату и время UTC',
+        enterLocalDateTime: 'Введите местную дату и время',
+        enterLocation: 'Введите местоположение (город)',
+        locationPlaceholder: 'напр. Москва, Санкт-Петербург',
+        convert: 'Конвертировать',
+        location: 'Местоположение',
+        timezone: 'Часовой пояс',
+        utcTime: 'Время UTC',
+        localTime: 'Местное время',
+        utcTimeInput: 'Время UTC (ввод)',
+        localTimeResult: 'Местное время (результат)',
+        utcTimeResult: 'Время UTC (результат)',
+        localTimeInput: 'Местное время (ввод)',
+        detectedTimezone: 'Определённый часовой пояс:',
+        light: 'Светлая',
+        dark: 'Тёмная',
+        lookingUp: 'Поиск...',
+        locationNotFound: 'Местоположение не найдено',
+        lookupFailed: 'Ошибка поиска',
+        dst: 'Летнее время',
+        noDst: 'Без летнего времени'
+      },
+      ja: {
+        timeConverter: '時間変換',
+        utc: 'UTC',
+        local: '現地',
+        utcToLocal: 'UTC → 現地時間',
+        localToUtc: '現地時間 → UTC',
+        enterUtcDateTime: 'UTC日時を入力',
+        enterLocalDateTime: '現地日時を入力',
+        enterLocation: '場所を入力（都市名）',
+        locationPlaceholder: '例：東京、大阪、名古屋',
+        convert: '変換',
+        location: '場所',
+        timezone: 'タイムゾーン',
+        utcTime: 'UTC時間',
+        localTime: '現地時間',
+        utcTimeInput: 'UTC時間（入力）',
+        localTimeResult: '現地時間（結果）',
+        utcTimeResult: 'UTC時間（結果）',
+        localTimeInput: '現地時間（入力）',
+        detectedTimezone: '検出されたタイムゾーン：',
+        light: 'ライト',
+        dark: 'ダーク',
+        lookingUp: '検索中...',
+        locationNotFound: '場所が見つかりません',
+        lookupFailed: '検索に失敗しました',
+        dst: '夏時間',
+        noDst: '夏時間なし'
+      },
+      zh: {
+        timeConverter: '时间转换器',
+        utc: 'UTC',
+        local: '本地',
+        utcToLocal: 'UTC → 本地时间',
+        localToUtc: '本地时间 → UTC',
+        enterUtcDateTime: '输入UTC日期和时间',
+        enterLocalDateTime: '输入本地日期和时间',
+        enterLocation: '输入位置（城市）',
+        locationPlaceholder: '例如：北京、上海、广州',
+        convert: '转换',
+        location: '位置',
+        timezone: '时区',
+        utcTime: 'UTC时间',
+        localTime: '本地时间',
+        utcTimeInput: 'UTC时间（输入）',
+        localTimeResult: '本地时间（结果）',
+        utcTimeResult: 'UTC时间（结果）',
+        localTimeInput: '本地时间（输入）',
+        detectedTimezone: '检测到的时区：',
+        light: '浅色',
+        dark: '深色',
+        lookingUp: '搜索中...',
+        locationNotFound: '未找到位置',
+        lookupFailed: '搜索失败',
+        dst: '夏令时',
+        noDst: '无夏令时'
+      },
+      ko: {
+        timeConverter: '시간 변환기',
+        utc: 'UTC',
+        local: '현지',
+        utcToLocal: 'UTC → 현지 시간',
+        localToUtc: '현지 시간 → UTC',
+        enterUtcDateTime: 'UTC 날짜 및 시간 입력',
+        enterLocalDateTime: '현지 날짜 및 시간 입력',
+        enterLocation: '위치 입력 (도시)',
+        locationPlaceholder: '예: 서울, 부산, 인천',
+        convert: '변환',
+        location: '위치',
+        timezone: '시간대',
+        utcTime: 'UTC 시간',
+        localTime: '현지 시간',
+        utcTimeInput: 'UTC 시간 (입력)',
+        localTimeResult: '현지 시간 (결과)',
+        utcTimeResult: 'UTC 시간 (결과)',
+        localTimeInput: '현지 시간 (입력)',
+        detectedTimezone: '감지된 시간대:',
+        light: '라이트',
+        dark: '다크',
+        lookingUp: '검색 중...',
+        locationNotFound: '위치를 찾을 수 없음',
+        lookupFailed: '검색 실패',
+        dst: '일광 절약 시간',
+        noDst: '일광 절약 시간 없음'
+      },
+      ar: {
+        timeConverter: 'محول الوقت',
+        utc: 'UTC',
+        local: 'محلي',
+        utcToLocal: 'UTC ← الوقت المحلي',
+        localToUtc: 'الوقت المحلي ← UTC',
+        enterUtcDateTime: 'أدخل تاريخ ووقت UTC',
+        enterLocalDateTime: 'أدخل التاريخ والوقت المحلي',
+        enterLocation: 'أدخل الموقع (المدينة)',
+        locationPlaceholder: 'مثال: دبي، الرياض، القاهرة',
+        convert: 'تحويل',
+        location: 'الموقع',
+        timezone: 'المنطقة الزمنية',
+        utcTime: 'وقت UTC',
+        localTime: 'الوقت المحلي',
+        utcTimeInput: 'وقت UTC (إدخال)',
+        localTimeResult: 'الوقت المحلي (النتيجة)',
+        utcTimeResult: 'وقت UTC (النتيجة)',
+        localTimeInput: 'الوقت المحلي (إدخال)',
+        detectedTimezone: 'المنطقة الزمنية المكتشفة:',
+        light: 'فاتح',
+        dark: 'داكن',
+        lookingUp: 'جاري البحث...',
+        locationNotFound: 'الموقع غير موجود',
+        lookupFailed: 'فشل البحث',
+        dst: 'التوقيت الصيفي',
+        noDst: 'بدون توقيت صيفي'
+      }
+    };
+
+    // Detect language from URL path
+    const supportedLangs = ['en', 'de', 'fr', 'es', 'pt', 'it', 'pl', 'nl', 'ru', 'ja', 'zh', 'ko', 'ar'];
+    const pathLang = window.location.pathname.split('/')[1];
+    const currentLang = supportedLangs.includes(pathLang) ? pathLang : 'en';
+    const t = translations[currentLang];
+
     // State
     let currentDirection = 'toLocal';
     let resolvedTimezone = null;
     let resolvedDisplayName = null;
     const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
+    // Apply translations to the page
+    function applyTranslations() {
+      // Static elements
+      document.querySelector('.card-title').textContent = t.timeConverter;
+      document.querySelector('.clock-item:first-child .clock-label').textContent = t.utc;
+      document.querySelector('.clock-item.local .clock-label').textContent = t.local;
+      document.querySelector('[data-direction="toLocal"]').textContent = t.utcToLocal;
+      document.querySelector('[data-direction="toUTC"]').textContent = t.localToUtc;
+      document.getElementById('time-step-label').textContent = t.enterUtcDateTime;
+      document.querySelector('.step:nth-child(3) .step-label').textContent = t.enterLocation;
+      document.getElementById('location-input').placeholder = t.locationPlaceholder;
+      document.getElementById('convert-btn').textContent = t.convert;
+      document.querySelector('.result-row:nth-child(1) .result-label').textContent = t.location;
+      document.querySelector('.result-row:nth-child(2) .result-label').textContent = t.timezone;
+      document.getElementById('result-utc-label').textContent = t.utcTime;
+      document.getElementById('result-local-label').textContent = t.localTime;
+      document.querySelector('.detected-tz').firstChild.textContent = t.detectedTimezone + ' ';
+      document.getElementById('theme-label').textContent = t.light;
+
+      // Set HTML lang attribute
+      document.documentElement.lang = currentLang;
+
+      // Set text direction for Arabic
+      if (currentLang === 'ar') {
+        document.documentElement.dir = 'rtl';
+      }
+    }
+
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {
+      applyTranslations();
       document.getElementById('user-tz').textContent = userTimezone;
       updateClocks();
       setInterval(updateClocks, 1000);
@@ -941,13 +1360,13 @@
       const resultLocalLabel = document.getElementById('result-local-label');
 
       if (dir === 'toLocal') {
-        timeLabel.textContent = 'Enter UTC Date & Time';
-        resultUtcLabel.textContent = 'UTC Time (input)';
-        resultLocalLabel.textContent = 'Local Time (result)';
+        timeLabel.textContent = t.enterUtcDateTime;
+        resultUtcLabel.textContent = t.utcTimeInput;
+        resultLocalLabel.textContent = t.localTimeResult;
       } else {
-        timeLabel.textContent = 'Enter Local Date & Time';
-        resultUtcLabel.textContent = 'UTC Time (result)';
-        resultLocalLabel.textContent = 'Local Time (input)';
+        timeLabel.textContent = t.enterLocalDateTime;
+        resultUtcLabel.textContent = t.utcTimeResult;
+        resultLocalLabel.textContent = t.localTimeInput;
       }
 
       // Clear previous result
@@ -965,7 +1384,7 @@
         return;
       }
 
-      feedback.textContent = 'Looking up...';
+      feedback.textContent = t.lookingUp;
       feedback.className = 'location-feedback loading';
 
       try {
@@ -979,12 +1398,12 @@
           feedback.className = 'location-feedback success';
         } else {
           resolvedTimezone = null;
-          feedback.textContent = data.error || 'Location not found';
+          feedback.textContent = t.locationNotFound;
           feedback.className = 'location-feedback error';
         }
       } catch (e) {
         resolvedTimezone = null;
-        feedback.textContent = 'Lookup failed — try again';
+        feedback.textContent = t.lookupFailed;
         feedback.className = 'location-feedback error';
       }
     }
@@ -1070,7 +1489,7 @@
     function setTheme(theme) {
       document.documentElement.setAttribute('data-theme', theme);
       document.getElementById('theme-icon').textContent = theme === 'light' ? '☀️' : '🌙';
-      document.getElementById('theme-label').textContent = theme === 'light' ? 'Light' : 'Dark';
+      document.getElementById('theme-label').textContent = theme === 'light' ? t.light : t.dark;
     }
 
     function debounce(func, wait) {

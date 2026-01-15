@@ -1,9 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://utchack.com/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://utchack.com/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://utchack.com/de/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://utchack.com/fr/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://utchack.com/es/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://utchack.com/pt/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://utchack.com/it/"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://utchack.com/pl/"/>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://utchack.com/nl/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://utchack.com/ru/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://utchack.com/ja/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://utchack.com/zh/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://utchack.com/ko/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://utchack.com/ar/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://utchack.com/"/>
     <lastmod>2026-01-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://utchack.com/de/</loc>
+    <lastmod>2026-01-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://utchack.com/fr/</loc>
+    <lastmod>2026-01-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://utchack.com/es/</loc>
+    <lastmod>2026-01-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://utchack.com/pt/</loc>
+    <lastmod>2026-01-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://utchack.com/it/</loc>
+    <lastmod>2026-01-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://utchack.com/pl/</loc>
+    <lastmod>2026-01-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://utchack.com/nl/</loc>
+    <lastmod>2026-01-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://utchack.com/ru/</loc>
+    <lastmod>2026-01-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://utchack.com/ja/</loc>
+    <lastmod>2026-01-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://utchack.com/zh/</loc>
+    <lastmod>2026-01-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://utchack.com/ko/</loc>
+    <lastmod>2026-01-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://utchack.com/ar/</loc>
+    <lastmod>2026-01-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
   </url>
 </urlset>
