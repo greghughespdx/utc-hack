@@ -268,6 +268,25 @@ async function geocodeLocation(query: string): Promise<{ lat: number; lon: numbe
   }
 }
 
+// Get generic timezone name without DST/standard designation
+function getGenericTimezoneName(timezone: string): string {
+  // Map of IANA timezone identifiers to generic names
+  const timezoneMap: Record<string, string> = {
+    'America/Los_Angeles': 'Pacific',
+    'America/Denver': 'Mountain',
+    'America/Phoenix': 'Mountain', // Arizona doesn't observe DST
+    'America/Chicago': 'Central',
+    'America/New_York': 'Eastern',
+    'America/Anchorage': 'Alaska',
+    'Pacific/Honolulu': 'Hawaii',
+    'America/Halifax': 'Atlantic',
+    'America/St_Johns': 'Newfoundland'
+  };
+
+  // Return mapped name or fallback to timezone name
+  return timezoneMap[timezone] || timezone.split('/').pop() || timezone;
+}
+
 // API: Lookup timezone for any location
 app.get('/api/location', async (req, res) => {
   const query = (req.query.q as string || '').trim();
@@ -332,17 +351,11 @@ app.get('/api/location', async (req, res) => {
     displayName = location.displayName;
   }
 
-  // Get current time info for this timezone
-  const now = new Date();
-  const targetDate = dateParam ? new Date(dateParam) : now;
-  const formatter = new Intl.DateTimeFormat('en-US', {
-    timeZone: timezone,
-    timeZoneName: 'short'
-  });
-  const parts = formatter.formatToParts(now);
-  const tzAbbr = parts.find(p => p.type === 'timeZoneName')?.value || '';
+  // Get generic timezone name (without current DST/standard designation)
+  const genericTzName = getGenericTimezoneName(timezone);
 
   // Calculate sun times if we have coordinates
+  const targetDate = dateParam ? new Date(dateParam) : new Date();
   let sunTimes = null;
   if (lat !== null && lon !== null) {
     const times = getSunTimes(lat, lon, targetDate);
@@ -376,7 +389,7 @@ app.get('/api/location', async (req, res) => {
 
   res.json({
     timezone,
-    tzAbbreviation: tzAbbr,
+    tzGenericName: genericTzName,
     displayName,
     coordinates: lat !== null ? { lat, lon } : null,
     sunTimes
@@ -459,16 +472,16 @@ app.post('/api/convert', (req, res) => {
       return res.status(400).json({ error: 'Invalid date' });
     }
 
-    // Format for display
+    // Format for display using 24-hour format
     const utcFormatter = new Intl.DateTimeFormat('en-US', {
       timeZone: 'UTC',
       weekday: 'long',
       year: 'numeric',
       month: 'long',
       day: 'numeric',
-      hour: 'numeric',
+      hour: '2-digit',
       minute: '2-digit',
-      hour12: true,
+      hour12: false,
       timeZoneName: 'short'
     });
 
@@ -478,12 +491,13 @@ app.post('/api/convert', (req, res) => {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
-      hour: 'numeric',
+      hour: '2-digit',
       minute: '2-digit',
-      hour12: true,
-      timeZoneName: 'long'
+      hour12: false,
+      timeZoneName: 'short'
     });
 
+    // Get timezone abbreviation for the SELECTED date (not current date)
     const shortFormatter = new Intl.DateTimeFormat('en-US', {
       timeZone: timezone,
       timeZoneName: 'short'

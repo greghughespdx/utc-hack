@@ -88,9 +88,11 @@
       --shadow: rgba(44, 36, 22, 0.1);
       --geometric-line: #c45c3e;
       --leadwork: rgba(107, 68, 35, 0.35);
+      color-scheme: light;
     }
 
     [data-theme="dark"] {
+      color-scheme: dark;
       --bg-primary: #1a1612;
       --bg-secondary: #2a241c;
       --bg-card: #322a20;
@@ -597,7 +599,6 @@
 
     .result-value.highlight {
       color: var(--accent-terracotta);
-      font-size: 1.25rem;
     }
 
     /* Sun Times Section */
@@ -843,7 +844,7 @@
       }
 
       .result-value.highlight {
-        font-size: 1rem;
+        /* Color only, inherit font-size from .result-value */
       }
 
       footer {
@@ -902,7 +903,73 @@
           <span class="step-number">1</span>
           <span class="step-label" id="time-step-label">Enter UTC Date & Time</span>
         </div>
-        <input type="datetime-local" id="time-input">
+        <div style="position: relative;">
+          <input type="text" id="time-input" readonly style="cursor: pointer;">
+          <button type="button" id="datetime-picker-btn" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1.2rem; color: var(--accent-terracotta); font-weight: bold;">◷</button>
+        </div>
+        <div id="datetime-picker" style="display: none; position: absolute; z-index: 1000; background: var(--bg-card); border: 1px solid var(--border-strong); padding: 1rem; margin-top: 0.5rem; box-shadow: 0 4px 12px var(--shadow);">
+          <div style="margin-bottom: 0.5rem;">
+            <label style="display: block; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.25rem;">DATE</label>
+            <input type="date" id="picker-date" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary);">
+          </div>
+          <div style="margin-bottom: 0.5rem;">
+            <label style="display: block; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.25rem;">TIME (24-HOUR)</label>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.5rem; border: 1px solid var(--border-color); background: var(--bg-primary);">
+              <!-- Hour Spinner -->
+              <div style="display: flex; flex-direction: column; align-items: center;">
+                <button type="button"
+                  onmousedown="startRapidIncrement(incrementHour)"
+                  onmouseup="stopRapidIncrement()"
+                  onmouseleave="stopRapidIncrement()"
+                  ontouchstart="startRapidIncrement(incrementHour)"
+                  ontouchend="stopRapidIncrement()"
+                  style="background: none; border: none; cursor: pointer; color: var(--accent-terracotta); font-size: 1.2rem; padding: 0.5rem; line-height: 1; min-width: 2.5rem; transition: opacity 0.2s;"
+                  onmouseover="this.style.opacity='0.7'"
+                  onmouseout="this.style.opacity='1'">▲</button>
+                <div id="picker-hour" style="font-family: 'SF Mono', 'Consolas', monospace; font-size: 1.1rem; color: var(--text-primary); min-width: 2.5rem; text-align: center; user-select: none; font-weight: 500;">00</div>
+                <button type="button"
+                  onmousedown="startRapidIncrement(decrementHour)"
+                  onmouseup="stopRapidIncrement()"
+                  onmouseleave="stopRapidIncrement()"
+                  ontouchstart="startRapidIncrement(decrementHour)"
+                  ontouchend="stopRapidIncrement()"
+                  style="background: none; border: none; cursor: pointer; color: var(--accent-terracotta); font-size: 1.2rem; padding: 0.5rem; line-height: 1; min-width: 2.5rem; transition: opacity 0.2s;"
+                  onmouseover="this.style.opacity='0.7'"
+                  onmouseout="this.style.opacity='1'">▼</button>
+              </div>
+
+              <!-- Colon Separator -->
+              <div style="font-family: 'SF Mono', 'Consolas', monospace; font-size: 1.1rem; color: var(--text-primary); font-weight: 500;">:</div>
+
+              <!-- Minute Spinner -->
+              <div style="display: flex; flex-direction: column; align-items: center;">
+                <button type="button"
+                  onmousedown="startRapidIncrement(incrementMinute)"
+                  onmouseup="stopRapidIncrement()"
+                  onmouseleave="stopRapidIncrement()"
+                  ontouchstart="startRapidIncrement(incrementMinute)"
+                  ontouchend="stopRapidIncrement()"
+                  style="background: none; border: none; cursor: pointer; color: var(--accent-terracotta); font-size: 1.2rem; padding: 0.5rem; line-height: 1; min-width: 2.5rem; transition: opacity 0.2s;"
+                  onmouseover="this.style.opacity='0.7'"
+                  onmouseout="this.style.opacity='1'">▲</button>
+                <div id="picker-minute" style="font-family: 'SF Mono', 'Consolas', monospace; font-size: 1.1rem; color: var(--text-primary); min-width: 2.5rem; text-align: center; user-select: none; font-weight: 500;">00</div>
+                <button type="button"
+                  onmousedown="startRapidIncrement(decrementMinute)"
+                  onmouseup="stopRapidIncrement()"
+                  onmouseleave="stopRapidIncrement()"
+                  ontouchstart="startRapidIncrement(decrementMinute)"
+                  ontouchend="stopRapidIncrement()"
+                  style="background: none; border: none; cursor: pointer; color: var(--accent-terracotta); font-size: 1.2rem; padding: 0.5rem; line-height: 1; min-width: 2.5rem; transition: opacity 0.2s;"
+                  onmouseover="this.style.opacity='0.7'"
+                  onmouseout="this.style.opacity='1'">▼</button>
+              </div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+            <button type="button" onclick="closeDateTimePicker()" style="padding: 0.5rem 1rem; background: var(--bg-secondary); border: 1px solid var(--border-color); cursor: pointer; color: var(--text-primary);">Cancel</button>
+            <button type="button" onclick="applyDateTime()" style="padding: 0.5rem 1rem; background: var(--accent-terracotta); border: none; cursor: pointer; color: white;">Apply</button>
+          </div>
+        </div>
       </div>
 
       <div class="step">
@@ -1480,6 +1547,21 @@
 
       // Location input with debounce
       document.getElementById('location-input').addEventListener('input', debounce(lookupLocation, 400));
+
+      // DateTime picker events
+      document.getElementById('time-input').addEventListener('click', openDateTimePicker);
+      document.getElementById('datetime-picker-btn').addEventListener('click', openDateTimePicker);
+
+      // Close picker when clicking outside
+      document.addEventListener('click', (e) => {
+        const picker = document.getElementById('datetime-picker');
+        const timeInput = document.getElementById('time-input');
+        const pickerBtn = document.getElementById('datetime-picker-btn');
+
+        if (!picker.contains(e.target) && e.target !== timeInput && e.target !== pickerBtn) {
+          closeDateTimePicker();
+        }
+      });
     });
 
     function updateClocks() {
@@ -1492,9 +1574,99 @@
       });
     }
 
+    // Store current datetime value
+    let currentDateTime = new Date();
+
     function setDefaultTime() {
-      const now = new Date();
-      document.getElementById('time-input').value = now.toISOString().slice(0, 16);
+      currentDateTime = new Date();
+      updateDateTimeDisplay();
+    }
+
+    function updateDateTimeDisplay() {
+      const timeInput = document.getElementById('time-input');
+      // Format: MM/DD/YYYY, HH:MM (24-hour)
+      const month = String(currentDateTime.getMonth() + 1).padStart(2, '0');
+      const day = String(currentDateTime.getDate()).padStart(2, '0');
+      const year = currentDateTime.getFullYear();
+      const hours = String(currentDateTime.getHours()).padStart(2, '0');
+      const minutes = String(currentDateTime.getMinutes()).padStart(2, '0');
+
+      timeInput.value = `${month}/${day}/${year}, ${hours}:${minutes}`;
+    }
+
+    // Spinner state
+    let pickerHourValue = 0;
+    let pickerMinuteValue = 0;
+    let incrementInterval = null;
+
+    function incrementHour() {
+      pickerHourValue = (pickerHourValue + 1) % 24;
+      updateSpinnerDisplay();
+    }
+
+    function decrementHour() {
+      pickerHourValue = (pickerHourValue - 1 + 24) % 24;
+      updateSpinnerDisplay();
+    }
+
+    function incrementMinute() {
+      pickerMinuteValue = (pickerMinuteValue + 1) % 60;
+      updateSpinnerDisplay();
+    }
+
+    function decrementMinute() {
+      pickerMinuteValue = (pickerMinuteValue - 1 + 60) % 60;
+      updateSpinnerDisplay();
+    }
+
+    function updateSpinnerDisplay() {
+      const hourEl = document.getElementById('picker-hour');
+      const minuteEl = document.getElementById('picker-minute');
+      if (hourEl) hourEl.textContent = String(pickerHourValue).padStart(2, '0');
+      if (minuteEl) minuteEl.textContent = String(pickerMinuteValue).padStart(2, '0');
+    }
+
+    // Rapid increment on hold
+    function startRapidIncrement(fn) {
+      fn(); // Execute immediately
+      incrementInterval = setInterval(fn, 100); // Then repeat
+    }
+
+    function stopRapidIncrement() {
+      if (incrementInterval) {
+        clearInterval(incrementInterval);
+        incrementInterval = null;
+      }
+    }
+
+    function openDateTimePicker() {
+      const picker = document.getElementById('datetime-picker');
+      const pickerDate = document.getElementById('picker-date');
+
+      // Set picker values from current datetime
+      pickerDate.value = currentDateTime.toISOString().slice(0, 10);
+      pickerHourValue = currentDateTime.getHours();
+      pickerMinuteValue = currentDateTime.getMinutes();
+      updateSpinnerDisplay();
+
+      picker.style.display = 'block';
+    }
+
+    function closeDateTimePicker() {
+      document.getElementById('datetime-picker').style.display = 'none';
+    }
+
+    function applyDateTime() {
+      const pickerDate = document.getElementById('picker-date').value;
+
+      if (pickerDate) {
+        // Combine date with spinner time values
+        const timeString = `${String(pickerHourValue).padStart(2, '0')}:${String(pickerMinuteValue).padStart(2, '0')}`;
+        currentDateTime = new Date(`${pickerDate}T${timeString}`);
+        updateDateTimeDisplay();
+      }
+
+      closeDateTimePicker();
     }
 
     function setDirection(dir) {
@@ -1545,7 +1717,7 @@
           resolvedTimezone = data.timezone;
           resolvedDisplayName = data.displayName;
           resolvedSunTimes = data.sunTimes || null;
-          feedback.textContent = `✓ ${data.timezone} (${data.tzAbbreviation})`;
+          feedback.textContent = `✓ ${data.timezone} (${data.tzGenericName})`;
           feedback.className = 'location-feedback success';
         } else {
           resolvedTimezone = null;
@@ -1561,12 +1733,13 @@
     }
 
     async function convert() {
-      const timeInput = document.getElementById('time-input').value;
-
-      if (!timeInput) {
+      if (!currentDateTime) {
         alert('Please enter a date and time');
         return;
       }
+
+      // Format as ISO string for API
+      const timeInput = currentDateTime.toISOString().slice(0, 16);
 
       if (!resolvedTimezone) {
         alert('Please enter a valid location');
