@@ -1661,8 +1661,9 @@
 
       if (pickerDate) {
         // Combine date with spinner time values
+        // CRITICAL: Add 'Z' suffix to force UTC interpretation (prevent browser timezone shift)
         const timeString = `${String(pickerHourValue).padStart(2, '0')}:${String(pickerMinuteValue).padStart(2, '0')}`;
-        currentDateTime = new Date(`${pickerDate}T${timeString}`);
+        currentDateTime = new Date(`${pickerDate}T${timeString}:00Z`);
         updateDateTimeDisplay();
       }
 
