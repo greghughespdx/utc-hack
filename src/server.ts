@@ -2,9 +2,84 @@ import express from 'express';
 import path from 'path';
 import { find } from 'geo-tz';
 import SunCalc from 'suncalc';
+import {
+  computeIsDST,
+  convertToLocal,
+  convertToUTC,
+  instantFromDate,
+  type Disambiguation
+} from './timeConversion.js';
 
 const app = express();
 const PORT = 3000;
+
+type LocationSuccess = { lat: number; lon: number; displayName: string };
+type LocationError = { error: 'rate_limited' | 'upstream_unavailable' | 'invalid_response' };
+type LocationResult = LocationSuccess | LocationError | null;
+
+const GEO_CACHE_TTL_MS = 12 * 60 * 60 * 1000;
+const AIRPORT_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
+
+const geocodeCache = new Map<string, { expiresAt: number; value: LocationSuccess }>();
+const airportCache = new Map<string, { expiresAt: number; value: LocationSuccess }>();
+
+function getCachedLocation(
+  cache: Map<string, { expiresAt: number; value: LocationSuccess }>,
+  key: string
+): LocationSuccess | null {
+  const entry = cache.get(key);
+  if (!entry) return null;
+  if (Date.now() > entry.expiresAt) {
+    cache.delete(key);
+    return null;
+  }
+  return entry.value;
+}
+
+function setCachedLocation(
+  cache: Map<string, { expiresAt: number; value: LocationSuccess }>,
+  key: string,
+  value: LocationSuccess,
+  ttlMs: number
+) {
+  cache.set(key, { expiresAt: Date.now() + ttlMs, value });
+}
+
+function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function fetchJsonWithRetry<T>(url: string, retries = 2, baseDelayMs = 300): Promise<T> {
+  let lastStatus: number | null = null;
+
+  for (let attempt = 0; attempt <= retries; attempt += 1) {
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'UTCTimeConverter/1.0 (educational project)'
+      }
+    });
+
+    if (response.ok) {
+      return response.json() as Promise<T>;
+    }
+
+    lastStatus = response.status;
+    const retryable = response.status === 429 || response.status >= 500;
+    if (!retryable || attempt === retries) {
+      const error = new Error(`Nominatim API error: ${response.status}`);
+      (error as { status?: number }).status = response.status;
+      throw error;
+    }
+
+    const retryAfter = response.headers.get('retry-after');
+    const retryDelay = retryAfter ? Number(retryAfter) * 1000 : baseDelayMs * (attempt + 1);
+    await sleep(Number.isFinite(retryDelay) ? retryDelay : baseDelayMs);
+  }
+
+  const error = new Error(`Nominatim API error: ${lastStatus ?? 'unknown'}`);
+  (error as { status?: number }).status = lastStatus ?? undefined;
+  throw error;
+}
 
 // Check if input looks like an airport code (ICAO or IATA)
 function isAirportCode(input: string): { isAirport: boolean; icaoCode: string } {
@@ -28,28 +103,22 @@ function isAirportCode(input: string): { isAirport: boolean; icaoCode: string } 
 }
 
 // Lookup airport by ICAO code using Nominatim
-async function lookupAirport(icaoCode: string): Promise<{ lat: number; lon: number; displayName: string } | null> {
+async function lookupAirport(icaoCode: string): Promise<LocationResult> {
   try {
     const code = icaoCode.trim().toUpperCase();
+    const cached = getCachedLocation(airportCache, code);
+    if (cached) return cached;
     // Search for airport by ICAO code
     const url = `https://nominatim.openstreetmap.org/search?` +
       `q=${encodeURIComponent(code + ' airport')}&format=json&limit=5&addressdetails=1`;
 
-    const response = await fetch(url, {
-      headers: {
-        'User-Agent': 'UTCTimeConverter/1.0 (educational project)'
-      }
-    });
-
-    if (!response.ok) return null;
-
-    const results = await response.json() as Array<{
+    const results = await fetchJsonWithRetry<Array<{
       lat: string;
       lon: string;
       display_name: string;
       type?: string;
       class?: string;
-    }>;
+    }>>(url);
 
     // Find result that's actually an airport/aerodrome
     const airport = results.find(r =>
@@ -61,39 +130,24 @@ async function lookupAirport(icaoCode: string): Promise<{ lat: number; lon: numb
 
     if (!airport) return null;
 
-    return {
+    const result = {
       lat: parseFloat(airport.lat),
       lon: parseFloat(airport.lon),
       displayName: `${code} - ${airport.display_name}`
     };
+    setCachedLocation(airportCache, code, result, AIRPORT_CACHE_TTL_MS);
+    return result;
   } catch (error) {
     console.error('Airport lookup error:', error);
-    return null;
+    const status = (error as { status?: number }).status;
+    if (status === 429) return { error: 'rate_limited' };
+    return { error: 'upstream_unavailable' };
   }
 }
 
 // Calculate sun times for a location
 function getSunTimes(lat: number, lon: number, date: Date) {
   const times = SunCalc.getTimes(date, lat, lon);
-
-  const formatTime = (d: Date, timezone: string) => {
-    if (isNaN(d.getTime())) return null;
-    return {
-      utc: d.toISOString(),
-      local: d.toLocaleTimeString('en-US', {
-        timeZone: timezone,
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-      }),
-      zulu: d.toLocaleTimeString('en-US', {
-        timeZone: 'UTC',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-      }) + 'Z'
-    };
-  };
 
   return {
     sunrise: times.sunrise,
@@ -226,45 +280,42 @@ function checkSingleTimezoneState(query: string): { timezone: string; displayNam
 }
 
 // Geocode a location using OpenStreetMap Nominatim (free, no API key)
-async function geocodeLocation(query: string): Promise<{ lat: number; lon: number; displayName: string } | null> {
+async function geocodeLocation(query: string): Promise<LocationResult> {
   try {
     // Add "USA" to query if it doesn't contain country info, to prioritize US results
     const searchQuery = query.toLowerCase().includes('usa') || query.includes(',')
       ? query
       : `${query}, USA`;
 
+    const cached = getCachedLocation(geocodeCache, searchQuery);
+    if (cached) return cached;
+
     const url = `https://nominatim.openstreetmap.org/search?` +
       `q=${encodeURIComponent(searchQuery)}&format=json&limit=1&addressdetails=1`;
 
-    const response = await fetch(url, {
-      headers: {
-        'User-Agent': 'UTCTimeConverter/1.0 (educational project)'
-      }
-    });
-
-    if (!response.ok) {
-      throw new Error(`Nominatim API error: ${response.status}`);
-    }
-
-    const results = await response.json() as Array<{
+    const results = await fetchJsonWithRetry<Array<{
       lat: string;
       lon: string;
       display_name: string;
-    }>;
+    }>>(url);
 
     if (results.length === 0) {
       return null;
     }
 
     const result = results[0];
-    return {
+    const locationResult = {
       lat: parseFloat(result.lat),
       lon: parseFloat(result.lon),
       displayName: result.display_name
     };
+    setCachedLocation(geocodeCache, searchQuery, locationResult, GEO_CACHE_TTL_MS);
+    return locationResult;
   } catch (error) {
     console.error('Geocoding error:', error);
-    return null;
+    const status = (error as { status?: number }).status;
+    if (status === 429) return { error: 'rate_limited' };
+    return { error: 'upstream_unavailable' };
   }
 }
 
@@ -306,7 +357,13 @@ app.get('/api/location', async (req, res) => {
 
   if (airportCheck.isAirport) {
     const airport = await lookupAirport(airportCheck.icaoCode);
-    if (airport) {
+    if (airport && 'error' in airport) {
+      const message = airport.error === 'rate_limited'
+        ? 'Airport lookup rate-limited. Please try again shortly.'
+        : 'Airport lookup failed. Please try again.';
+      return res.status(airport.error === 'rate_limited' ? 429 : 503).json({ error: message });
+    }
+    if (airport && !('error' in airport)) {
       lat = airport.lat;
       lon = airport.lon;
       displayName = airport.displayName;
@@ -329,6 +386,13 @@ app.get('/api/location', async (req, res) => {
   } else {
     // Fall back to geocoding API for other locations
     const location = await geocodeLocation(query);
+
+    if (location && 'error' in location) {
+      const message = location.error === 'rate_limited'
+        ? 'Location lookup rate-limited. Please try again shortly.'
+        : 'Location lookup failed. Please try again.';
+      return res.status(location.error === 'rate_limited' ? 429 : 503).json({ error: message });
+    }
 
     if (!location) {
       return res.status(404).json({
@@ -398,7 +462,7 @@ app.get('/api/location', async (req, res) => {
 
 // API: Convert time between UTC and a timezone (bidirectional)
 app.post('/api/convert', (req, res) => {
-  const { time, timezone, direction } = req.body;
+  const { time, timezone, direction, disambiguation } = req.body;
 
   if (!time || !timezone || !direction) {
     return res.status(400).json({ error: 'time, timezone, and direction required' });
@@ -409,63 +473,27 @@ app.post('/api/convert', (req, res) => {
   }
 
   try {
-    let inputDate: Date;
     let utcDate: Date;
-    let localDate: Date;
+    let resolvedTimezone = timezone as string;
 
     if (direction === 'toLocal') {
       // Input is UTC, convert to local
-      inputDate = new Date(time + (time.includes('Z') ? '' : 'Z'));
-      utcDate = inputDate;
-      localDate = inputDate; // Same instant, different representation
+      const { instant, timezone: tz } = convertToLocal(time, timezone);
+      resolvedTimezone = tz;
+      utcDate = new Date(instant.epochMilliseconds);
     } else {
       // Input is local time in the given timezone, convert to UTC
-      // This is trickier - we need to interpret the input as being in the target timezone
-      inputDate = new Date(time);
-
-      // Get the offset for the target timezone at this time
-      const localFormatter = new Intl.DateTimeFormat('en-US', {
-        timeZone: timezone,
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false
-      });
-
-      // Create a date object treating input as the local time in that timezone
-      // We'll use a different approach: find the UTC time that, when converted to the timezone, gives us our input
-      const targetParts = time.split(/[-T:]/);
-      const year = parseInt(targetParts[0]);
-      const month = parseInt(targetParts[1]) - 1;
-      const day = parseInt(targetParts[2]);
-      const hour = parseInt(targetParts[3] || '0');
-      const minute = parseInt(targetParts[4] || '0');
-
-      // Start with a guess (treating input as UTC)
-      let guess = new Date(Date.UTC(year, month, day, hour, minute, 0));
-
-      // Iterate to find the correct UTC time
-      for (let i = 0; i < 3; i++) {
-        const formatted = localFormatter.format(guess);
-        const [datePart, timePart] = formatted.split(', ');
-        const [m, d, y] = datePart.split('/').map(Number);
-        const [h, min] = timePart.split(':').map(Number);
-
-        const diffMs =
-          (year - y) * 365.25 * 24 * 60 * 60 * 1000 +
-          (month - (m - 1)) * 30 * 24 * 60 * 60 * 1000 +
-          (day - d) * 24 * 60 * 60 * 1000 +
-          (hour - h) * 60 * 60 * 1000 +
-          (minute - min) * 60 * 1000;
-
-        guess = new Date(guess.getTime() + diffMs);
+      const allowedDisambiguations: Disambiguation[] = ['compatible', 'earlier', 'later', 'reject'];
+      const chosenDisambiguation = (disambiguation ?? 'reject') as Disambiguation;
+      if (!allowedDisambiguations.includes(chosenDisambiguation)) {
+        return res.status(400).json({
+          error: 'disambiguation must be "compatible", "earlier", "later", or "reject"'
+        });
       }
 
-      utcDate = guess;
-      localDate = new Date(time);
+      const { instant, timezone: tz } = convertToUTC(time, timezone, chosenDisambiguation);
+      resolvedTimezone = tz;
+      utcDate = new Date(instant.epochMilliseconds);
     }
 
     if (isNaN(utcDate.getTime())) {
@@ -486,7 +514,7 @@ app.post('/api/convert', (req, res) => {
     });
 
     const localFormatter = new Intl.DateTimeFormat('en-US', {
-      timeZone: timezone,
+      timeZone: resolvedTimezone,
       weekday: 'long',
       year: 'numeric',
       month: 'long',
@@ -499,31 +527,43 @@ app.post('/api/convert', (req, res) => {
 
     // Get timezone abbreviation for the SELECTED date (not current date)
     const shortFormatter = new Intl.DateTimeFormat('en-US', {
-      timeZone: timezone,
+      timeZone: resolvedTimezone,
       timeZoneName: 'short'
     });
 
     const shortParts = shortFormatter.formatToParts(utcDate);
     const tzAbbr = shortParts.find(p => p.type === 'timeZoneName')?.value || '';
-    const isDST = tzAbbr.includes('DT') || tzAbbr.includes('Summer');
+    const isDST = computeIsDST(instantFromDate(utcDate), resolvedTimezone);
 
     res.json({
       utcFormatted: utcFormatter.format(utcDate),
       localFormatted: localFormatter.format(utcDate),
       utcISO: utcDate.toISOString(),
-      timezone,
+      timezone: resolvedTimezone,
       tzAbbreviation: tzAbbr,
       isDST
     });
   } catch (error) {
     console.error('Conversion error:', error);
-    res.status(400).json({ error: 'Invalid timezone or date' });
+    const message = error instanceof Error ? error.message : 'Invalid timezone or date';
+    res.status(400).json({ error: message });
   }
 });
 
 // API: Get all IANA timezones
 app.get('/api/timezones', (_req, res) => {
-  const timezones = Intl.supportedValuesOf('timeZone');
+  const timezones = typeof Intl.supportedValuesOf === 'function'
+    ? Intl.supportedValuesOf('timeZone')
+    : [
+      'UTC',
+      'America/New_York',
+      'America/Chicago',
+      'America/Denver',
+      'America/Los_Angeles',
+      'America/Phoenix',
+      'America/Anchorage',
+      'Pacific/Honolulu'
+    ];
   res.json(timezones);
 });
 
@@ -538,6 +578,10 @@ supportedLangs.forEach(lang => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`🌍 UTC Time Converter running at http://localhost:${PORT}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`🌍 UTC Time Converter running at http://localhost:${PORT}`);
+  });
+}
+
+export { app };
