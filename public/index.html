@@ -970,16 +970,6 @@
             <button type="button" onclick="applyDateTime()" style="padding: 0.5rem 1rem; background: var(--accent-terracotta); border: none; cursor: pointer; color: white;">Apply</button>
           </div>
         </div>
-        <div id="disambiguation-container" style="display: none; margin-top: 0.75rem; padding: 0.75rem; border: 1px dashed var(--border-color); border-radius: 8px; background: var(--bg-secondary);">
-          <label for="disambiguation-select" id="disambiguation-label" style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.35rem;">Ambiguous local time handling</label>
-          <select id="disambiguation-select" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary);">
-            <option id="disambiguation-option-reject" value="reject">Reject invalid/ambiguous times</option>
-            <option id="disambiguation-option-compatible" value="compatible">Compatible (advance during gaps)</option>
-            <option id="disambiguation-option-earlier" value="earlier">Earlier (first occurrence)</option>
-            <option id="disambiguation-option-later" value="later">Later (second occurrence)</option>
-          </select>
-          <div id="disambiguation-help" style="margin-top: 0.4rem; font-size: 0.75rem; color: var(--text-muted);">Used during DST fall-back/forward when local times overlap or do not exist.</div>
-        </div>
       </div>
 
       <div class="step">
@@ -1076,12 +1066,6 @@
         dst: 'DST',
         noDst: 'No DST',
         sunTimesHeader: 'Sun Times (for selected date)',
-        disambiguationLabel: 'Ambiguous local time handling',
-        disambiguationHelp: 'Used during DST fall-back/forward when local times overlap or do not exist.',
-        disambiguationReject: 'Reject invalid/ambiguous times',
-        disambiguationCompatible: 'Compatible (advance during gaps)',
-        disambiguationEarlier: 'Earlier (first occurrence)',
-        disambiguationLater: 'Later (second occurrence)',
         civilDawn: 'Civil Dawn',
         sunrise: 'Sunrise',
         sunset: 'Sunset',
@@ -1490,7 +1474,6 @@
     const pathLang = window.location.pathname.split('/')[1];
     const currentLang = supportedLangs.includes(pathLang) ? pathLang : 'en';
     const t = translations[currentLang];
-    const base = translations.en;
 
     // State
     let currentDirection = 'toLocal';
@@ -1538,14 +1521,6 @@
         document.getElementById('sunrise-label').textContent = t.sunrise;
         document.getElementById('sunset-label').textContent = t.sunset;
         document.getElementById('civil-dusk-label').textContent = t.civilDusk;
-
-        // Disambiguation UI (fallback to English if missing)
-        document.getElementById('disambiguation-label').textContent = t.disambiguationLabel || base.disambiguationLabel;
-        document.getElementById('disambiguation-help').textContent = t.disambiguationHelp || base.disambiguationHelp;
-        document.getElementById('disambiguation-option-reject').textContent = t.disambiguationReject || base.disambiguationReject;
-        document.getElementById('disambiguation-option-compatible').textContent = t.disambiguationCompatible || base.disambiguationCompatible;
-        document.getElementById('disambiguation-option-earlier').textContent = t.disambiguationEarlier || base.disambiguationEarlier;
-        document.getElementById('disambiguation-option-later').textContent = t.disambiguationLater || base.disambiguationLater;
 
         // Set HTML lang attribute
         document.documentElement.lang = currentLang;
@@ -1705,18 +1680,15 @@
       const timeLabel = document.getElementById('time-step-label');
       const resultUtcLabel = document.getElementById('result-utc-label');
       const resultLocalLabel = document.getElementById('result-local-label');
-      const disambiguationContainer = document.getElementById('disambiguation-container');
 
       if (dir === 'toLocal') {
         timeLabel.textContent = t.enterUtcDateTime;
         resultUtcLabel.textContent = t.utcTimeInput;
         resultLocalLabel.textContent = t.localTimeResult;
-        disambiguationContainer.style.display = 'none';
       } else {
         timeLabel.textContent = t.enterLocalDateTime;
         resultUtcLabel.textContent = t.utcTimeResult;
         resultLocalLabel.textContent = t.localTimeInput;
-        disambiguationContainer.style.display = 'block';
       }
 
       // Clear previous result
@@ -1794,7 +1766,7 @@
           direction: currentDirection
         };
         if (currentDirection === 'toUTC') {
-          payload.disambiguation = document.getElementById('disambiguation-select').value;
+          payload.disambiguation = 'reject';
         }
         const res = await fetch('/api/convert', {
           method: 'POST',
@@ -1805,7 +1777,13 @@
         const data = await res.json();
 
         if (data.error) {
-          alert(data.error);
+          if (data.error.includes('no such instant')) {
+            alert('That local time does not exist due to a daylight saving time change. Please choose a different time.');
+          } else if (data.error.includes('multiple instants')) {
+            alert('That local time occurs twice due to a daylight saving time change. Please choose a different time.');
+          } else {
+            alert(data.error);
+          }
           return;
         }
 

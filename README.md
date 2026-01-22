@@ -26,8 +26,10 @@ Input rules:
 - direction=toUTC: time must not include an offset or Z (local wall time)
 
 DST handling:
-- If the local time is nonexistent (spring-forward gap) and disambiguation=reject, the API returns 400.
-- If the local time is ambiguous (fall-back overlap), set disambiguation to "earlier" or "later".
+- The API supports a `disambiguation` parameter for DST gaps/overlaps.
+- The current UI always uses `disambiguation=reject` for local→UTC conversions.
+- If the local time is nonexistent (spring-forward gap), the API returns 400 and the UI prompts for a different time.
+- If the local time is ambiguous (fall-back overlap), the API returns 400 and the UI prompts for a different time.
   - Gap (spring-forward): reject=error, compatible=advance; earlier/later are not applicable.
   - Overlap (fall-back): earlier=first occurrence, later=second occurrence, compatible=first, reject=error.
 
