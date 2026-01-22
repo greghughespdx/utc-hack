@@ -1585,11 +1585,11 @@
     function updateDateTimeDisplay() {
       const timeInput = document.getElementById('time-input');
       // Format: MM/DD/YYYY, HH:MM (24-hour)
-      const month = String(currentDateTime.getMonth() + 1).padStart(2, '0');
-      const day = String(currentDateTime.getDate()).padStart(2, '0');
-      const year = currentDateTime.getFullYear();
-      const hours = String(currentDateTime.getHours()).padStart(2, '0');
-      const minutes = String(currentDateTime.getMinutes()).padStart(2, '0');
+      const month = String(currentDateTime.getUTCMonth() + 1).padStart(2, '0');
+      const day = String(currentDateTime.getUTCDate()).padStart(2, '0');
+      const year = currentDateTime.getUTCFullYear();
+      const hours = String(currentDateTime.getUTCHours()).padStart(2, '0');
+      const minutes = String(currentDateTime.getUTCMinutes()).padStart(2, '0');
 
       timeInput.value = `${month}/${day}/${year}, ${hours}:${minutes}`;
     }
@@ -1645,8 +1645,8 @@
 
       // Set picker values from current datetime
       pickerDate.value = currentDateTime.toISOString().slice(0, 10);
-      pickerHourValue = currentDateTime.getHours();
-      pickerMinuteValue = currentDateTime.getMinutes();
+      pickerHourValue = currentDateTime.getUTCHours();
+      pickerMinuteValue = currentDateTime.getUTCMinutes();
       updateSpinnerDisplay();
 
       picker.style.display = 'block';
